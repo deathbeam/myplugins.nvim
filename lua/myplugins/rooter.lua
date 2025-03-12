@@ -19,7 +19,7 @@ local M = {
     },
 }
 
-local utils = require('config.utils')
+local utils = require('myplugins.utils')
 
 local root_cache = {}
 local function find_root(markers)
