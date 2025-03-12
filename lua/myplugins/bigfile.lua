@@ -1,35 +1,35 @@
-local utils = require("myplugins.utils")
+local utils = require('myplugins.utils')
 
 local M = {}
 
 function M.setup()
-    utils.au("BufReadPre", {
-        pattern = "*",
-        desc = "myplugins: Disable features for large files",
+    utils.au('BufReadPre', {
+        pattern = '*',
+        desc = 'myplugins: Disable features for large files',
         callback = function(args)
             local bufnr = args.buf
-            local size = vim.fn.getfsize(vim.fn.expand("%"))
+            local size = vim.fn.getfsize(vim.fn.expand('%'))
 
             if size < 1024 * 1024 then
                 return
             end
 
-            vim.api.nvim_buf_set_var(bufnr, "bigfile_disable", 1)
+            vim.api.nvim_buf_set_var(bufnr, 'bigfile_disable', 1)
 
             -- Disable treesitter
-            require("nvim-treesitter.configs").get_module("indent").disable = function()
-                return vim.api.nvim_buf_get_var(bufnr, "bigfile_disable") == 1
+            require('nvim-treesitter.configs').get_module('indent').disable = function()
+                return vim.api.nvim_buf_get_var(bufnr, 'bigfile_disable') == 1
             end
 
             -- Disable autoindent
-            vim.bo.indentexpr = ""
+            vim.bo.indentexpr = ''
             vim.bo.autoindent = false
             vim.bo.smartindent = false
             -- Disable folding
-            vim.opt_local.foldmethod = "manual"
-            vim.opt_local.foldexpr = "0"
+            vim.opt_local.foldmethod = 'manual'
+            vim.opt_local.foldexpr = '0'
             -- Disable statuscolumn
-            vim.opt_local.statuscolumn = ""
+            vim.opt_local.statuscolumn = ''
             -- Disable search highlight
             vim.opt_local.hlsearch = false
             -- Disable line wrapping

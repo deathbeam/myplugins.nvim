@@ -1,10 +1,10 @@
-local utils = require("myplugins.utils")
+local utils = require('myplugins.utils')
 
 local M = {
     config = {
-        session_dir = vim.fn.stdpath("data") .. "/sessions/",
+        session_dir = vim.fn.stdpath('data') .. '/sessions/',
         dirs = {
-            vim.fn.expand("~/git"),
+            vim.fn.expand('~/git'),
         },
     },
 }
@@ -15,12 +15,12 @@ local function get_session_file()
     end
 
     local cwd = vim.fn.getcwd()
-    vim.notify("Checking session for directory: " .. cwd, vim.log.levels.DEBUG)
+    vim.notify('Checking session for directory: ' .. cwd, vim.log.levels.DEBUG)
 
     -- Check if current directory is in allowed_dirs
     local is_allowed = false
     for _, dir in ipairs(M.config.dirs) do
-        if string.match(cwd, "^" .. dir) then
+        if string.match(cwd, '^' .. dir) then
             is_allowed = true
             break
         end
@@ -30,34 +30,34 @@ local function get_session_file()
         return nil
     end
 
-    vim.fn.mkdir(M.config.session_dir, "p")
-    return M.config.session_dir .. cwd:gsub("/", "_") .. ".vim"
+    vim.fn.mkdir(M.config.session_dir, 'p')
+    return M.config.session_dir .. cwd:gsub('/', '_') .. '.vim'
 end
 
 function M.setup(config)
     config = utils.cfg(M.config, config)
 
-    utils.au("VimLeavePre", {
-        desc = "myplugins: Save session on exit",
+    utils.au('VimLeavePre', {
+        desc = 'myplugins: Save session on exit',
         callback = function()
             local session_file = get_session_file()
             if session_file then
-                vim.notify("Saving session...", vim.log.levels.INFO)
-                vim.cmd("mksession! " .. session_file)
+                vim.notify('Saving session...', vim.log.levels.INFO)
+                vim.cmd('mksession! ' .. session_file)
             end
         end,
     })
 
-    utils.au("VimEnter", {
-        desc = "myplugins: Restore session on enter",
+    utils.au('VimEnter', {
+        desc = 'myplugins: Restore session on enter',
         callback = function()
             local session_file = get_session_file()
             if session_file and vim.fn.filereadable(session_file) == 1 then
-                vim.notify("Loading session...", vim.log.levels.INFO)
-                vim.cmd("silent! source " .. session_file)
-                vim.cmd("silent! doautoall BufRead")
-                vim.cmd("silent! doautoall FileType")
-                vim.cmd("silent! doautoall BufEnter")
+                vim.notify('Loading session...', vim.log.levels.INFO)
+                vim.cmd('silent! source ' .. session_file)
+                vim.cmd('silent! doautoall BufRead')
+                vim.cmd('silent! doautoall FileType')
+                vim.cmd('silent! doautoall BufEnter')
             end
         end,
     })
