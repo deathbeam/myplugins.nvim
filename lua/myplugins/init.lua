@@ -3,8 +3,7 @@ local M = {}
 function M.setup(config)
     config = config or {}
     for key, value in pairs(config) do
-        local plugin
-        require('myplugins.' .. key)
+        local plugin = require('myplugins.' .. key)
         if plugin and plugin.setup then
             plugin.setup(value)
         else
