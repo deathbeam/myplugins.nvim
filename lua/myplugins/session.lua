@@ -62,3 +62,5 @@ function M.setup(config)
         end,
     })
 end
+
+return M
