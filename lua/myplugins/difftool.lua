@@ -1,7 +1,6 @@
-local utils = require('myplugins.utils')
-
 local M = {}
 
+local utils = require('myplugins.utils')
 local layout = {
     left_win = nil,
     right_win = nil,

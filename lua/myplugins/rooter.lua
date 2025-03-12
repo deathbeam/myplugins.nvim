@@ -1,5 +1,3 @@
-local utils = require('config.utils')
-
 local M = {
     config = {
         dirs = {
@@ -20,6 +18,8 @@ local M = {
         },
     },
 }
+
+local utils = require('config.utils')
 
 local root_cache = {}
 local function find_root(markers)

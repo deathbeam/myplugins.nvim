@@ -1,6 +1,6 @@
-local fzf = require('fzf-lua')
-
 local M = {}
+
+local fzf = require('fzf-lua')
 
 local function get_entry(entry, cur_seq)
     -- Get state after undo

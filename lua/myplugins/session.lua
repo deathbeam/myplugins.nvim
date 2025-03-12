@@ -1,5 +1,3 @@
-local utils = require('myplugins.utils')
-
 local M = {
     config = {
         session_dir = vim.fn.stdpath('data') .. '/sessions/',
@@ -8,6 +6,8 @@ local M = {
         },
     },
 }
+
+local utils = require('myplugins.utils')
 
 local function get_session_file()
     if vim.fn.argc() > 0 or vim.tbl_isempty(vim.api.nvim_list_uis()) then

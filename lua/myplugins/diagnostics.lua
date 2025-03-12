@@ -1,7 +1,7 @@
+local M = {}
+
 local utils = require('myplugins.utils')
 local lastlnum = nil
-
-local M = {}
 
 function M.setup()
     -- Store original DiagnosticUnnecessary colors to reuse

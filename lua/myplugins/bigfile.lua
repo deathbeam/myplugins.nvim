@@ -1,6 +1,6 @@
-local utils = require('myplugins.utils')
-
 local M = {}
+
+local utils = require('myplugins.utils')
 
 function M.setup()
     utils.au('BufReadPre', {
