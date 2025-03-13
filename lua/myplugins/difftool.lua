@@ -101,8 +101,6 @@ local function diff_directories(left_dir, right_dir)
 
     -- Create a map of all relative paths
     local all_paths = {}
-
-    -- Track potential renames (files only in one dir)
     local left_only = {}
     local right_only = {}
 
@@ -141,7 +139,7 @@ local function diff_directories(left_dir, right_dir)
     -- Detect possible renames
     local renamed = {}
     for left_rel, left_path in pairs(left_only) do
-        local best_match = { similarity = 0.5, path = nil } -- minimum 50% similarity threshold
+        local best_match = { similarity = 0.5, path = nil }
 
         for right_rel, right_path in pairs(right_only) do
             local similarity = calculate_similarity(left_path, right_path)
@@ -160,11 +158,6 @@ local function diff_directories(left_dir, right_dir)
             all_paths[left_rel].right = best_match.path
             right_only[best_match.rel] = nil
         end
-    end
-
-    -- Remove detected renames from left_only
-    for left_rel in pairs(renamed) do
-        left_only[left_rel] = nil
     end
 
     -- Convert to quickfix entries
