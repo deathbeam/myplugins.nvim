@@ -67,7 +67,7 @@ documentation when resolving completion items:
 CMDCOMPLETE ~
 
 
-  ![WARNING] Requires neovim 0.11.0+
+  [!WARNING] Requires neovim 0.11.0+
 Command-line autocompletion
 
 
