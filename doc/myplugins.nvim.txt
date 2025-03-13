@@ -5,7 +5,17 @@ Table of Contents                           *myplugins.nvim-table-of-contents*
 
 1. myplugins.nvim                              |myplugins.nvim-myplugins.nvim|
   - Usage                                               |myplugins.nvim-usage|
-  - Plugins                                           |myplugins.nvim-plugins|
+  - bigfile                                           |myplugins.nvim-bigfile|
+  - bufcomplete                                   |myplugins.nvim-bufcomplete|
+  - cmdcomplete                                   |myplugins.nvim-cmdcomplete|
+  - diagnostics                                   |myplugins.nvim-diagnostics|
+  - difftool                                         |myplugins.nvim-difftool|
+  - lspecho                                           |myplugins.nvim-lspecho|
+  - rooter                                             |myplugins.nvim-rooter|
+  - session                                           |myplugins.nvim-session|
+  - signature                                       |myplugins.nvim-signature|
+  - undotree                                         |myplugins.nvim-undotree|
+  - wiki                                                 |myplugins.nvim-wiki|
 
 ==============================================================================
 1. myplugins.nvim                              *myplugins.nvim-myplugins.nvim*
@@ -29,17 +39,28 @@ USAGE                                                   *myplugins.nvim-usage*
 <
 
 
-PLUGINS                                               *myplugins.nvim-plugins*
-
-
-BIGFILE ~
+BIGFILE                                               *myplugins.nvim-bigfile*
 
 Automatically disable stuff for large files
 
 
-BUFCOMPLETE ~
+BUFCOMPLETE                                       *myplugins.nvim-bufcomplete*
 
 LSP + treesitter autocompletion
+
+
+DEFAULT CONFIG ~
+
+>lua
+    {
+        border = nil, -- Documentation border style
+        entry_mapper = nil, -- Custom completion entry mapper
+        debounce_delay = 100,
+    }
+<
+
+
+USAGE ~
 
 For best completion experience:
 
@@ -64,23 +85,26 @@ documentation when resolving completion items:
 <
 
 
-CMDCOMPLETE ~
+CMDCOMPLETE                                       *myplugins.nvim-cmdcomplete*
 
-
-  [!WARNING] Requires neovim 0.11.0+
 Command-line autocompletion
 
 
-DIAGNOSTICS ~
+  [!WARNING] Requires neovim 0.11.0+
+
+DIAGNOSTICS                                       *myplugins.nvim-diagnostics*
 
 Automatically show diagnostic popup on cursor hover and disable
 `DiagnosticUnnecessary` highlighting for code under cursor.
 
 
-DIFFTOOL ~
+DIFFTOOL                                             *myplugins.nvim-difftool*
 
 `DiffTool <left> <right>` command for integration with `git difftool` and `git
 difftool --dir-diff`.
+
+
+USAGE ~
 
 Add this to your `gitconfig`:
 
@@ -93,42 +117,113 @@ Add this to your `gitconfig`:
 <
 
 
-LSPECHO ~
+LSPECHO                                               *myplugins.nvim-lspecho*
 
 Echo LSP progress to cmdline
 
 
-ROOTER ~
+DEFAULT CONFIG ~
+
+>lua
+    {
+        echo = true, -- Echo progress messages, if set to false you can use .message() to get the current message
+        decay = 3000, -- Message decay time in milliseconds
+        interval = 100, -- Minimum time between echo updates in milliseconds
+        attach_log = false, -- Attach to logMessage and showMessage
+    }
+<
+
+
+ROOTER                                                 *myplugins.nvim-rooter*
 
 Automatically changes working directory to project root.
 
 
-SESSION ~
+DEFAULT CONFIG ~
+
+>lua
+    {
+        dirs = {
+            '.git',
+            '.git/',
+            '_darcs/',
+            '.hg/',
+            '.bzr/',
+            '.svn/',
+            '.editorconfig',
+            'Makefile',
+            '.pylintrc',
+            'requirements.txt',
+            'setup.py',
+            'package.json',
+            'mvnw',
+            'gradlew',
+        },
+    }
+<
+
+
+SESSION                                               *myplugins.nvim-session*
 
 Automatically saves and restores session in predefined folders (default ~/git)
 
 
-SIGNATURE ~
+DEFAULT CONFIG ~
+
+>lua
+    {
+        session_dir = vim.fn.stdpath('data') .. '/sessions/',
+        dirs = {
+            vim.fn.expand('~/git'),
+        },
+    }
+<
+
+
+SIGNATURE                                           *myplugins.nvim-signature*
 
 Automatically show function signature on cursor hover in insert mode.
 
 
-UNDOTREE ~
+DEFAULT CONFIG ~
+
+>lua
+    {
+        border = nil, -- Signature border style
+        width = 80, -- Max width of signature window
+        height = 25, -- Max height of signature window
+        debounce_delay = 100,
+    }
+<
+
+
+UNDOTREE                                             *myplugins.nvim-undotree*
 
 Undo tree visualization for `fzf-lua`.
 
-Usage:
+
+USAGE ~
 
 >lua
     vim.keymap.set('n', '<leader>fu', require('myplugins.undotree').show)
 <
 
 
-WIKI ~
+WIKI                                                     *myplugins.nvim-wiki*
 
 Simple wiki/note-taking functionality using `fzf-lua`.
 
-Usage:
+
+DEFAULT CONFIG ~
+
+>lua
+    {
+        dir = vim.fn.expand('~/vimwiki'),
+    }
+<
+
+
+USAGE ~
 
 >lua
     local wiki = require('myplugins.wiki')
