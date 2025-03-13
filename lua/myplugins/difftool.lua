@@ -216,10 +216,9 @@ function M.setup()
     vim.api.nvim_create_autocmd('BufWinEnter', {
         group = group,
         pattern = 'quickfix',
-        callback = function()
-            local bufnr = vim.api.nvim_get_current_buf()
-            vim.api.nvim_buf_clear_namespace(bufnr, ns_id, 0, -1)
-            local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+        callback = function(args)
+            vim.api.nvim_buf_clear_namespace(args.buf, ns_id, 0, -1)
+            local lines = vim.api.nvim_buf_get_lines(args.buf, 0, -1, false)
 
             -- Map status codes to highlight groups
             for i, line in ipairs(lines) do
@@ -227,7 +226,7 @@ function M.setup()
                 local hl_group = highlight_map[status]
 
                 if hl_group then
-                    vim.api.nvim_buf_add_highlight(bufnr, ns_id, hl_group, i - 1, 0, 2)
+                    vim.hl.range(args.buf, ns_id, hl_group, { i - 1, 0 }, { i - 1, 1 })
                 end
             end
         end,
