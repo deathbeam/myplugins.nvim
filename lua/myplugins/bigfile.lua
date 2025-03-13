@@ -1,6 +1,11 @@
-local M = {}
+local M = {
+    config = {
+        max_size = 1024 * 1024,
+    },
+}
 
-function M.setup()
+function M.setup(config)
+    M.config = vim.tbl_deep_extend('force', M.config, config or {})
     local group = vim.api.nvim_create_augroup('myplugins-bigfile', { clear = true })
 
     vim.api.nvim_create_autocmd('BufReadPre', {
@@ -11,7 +16,7 @@ function M.setup()
             local bufnr = args.buf
             local size = vim.fn.getfsize(vim.fn.expand('%'))
 
-            if size < 1024 * 1024 then
+            if size < M.config.max_size then
                 return
             end
 

@@ -20,6 +20,13 @@ require('myplugins').setup {
 ## bigfile
 Automatically disable stuff for large files
 
+### Default config
+```lua
+{
+    max_size = 1024 * 1024,
+}
+```
+
 ## bufcomplete
 LSP + treesitter autocompletion
 
@@ -114,18 +121,23 @@ Automatically changes working directory to project root.
 ```lua
 {
     dirs = {
-        '.git',
         '.git/',
         '_darcs/',
         '.hg/',
         '.bzr/',
         '.svn/',
         '.editorconfig',
+        '.venv/',
+        'node_modules/',
         'Makefile',
+        'CMakeLists.txt',
         '.pylintrc',
         'requirements.txt',
         'setup.py',
+        'pyproject.toml',
         'package.json',
+        'Cargo.toml',
+        'go.mod',
         'mvnw',
         'gradlew',
     },
