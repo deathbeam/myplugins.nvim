@@ -1,15 +1,22 @@
-local M = {}
+local M = {
+    config = {
+        rename = {
+            detect = true, -- whether to detect renames, can be slow on large directories so disable if needed
+            similarity = 0.5, -- minimum similarity for rename detection
+            max_size = 1024 * 1024, -- maximum file size for rename detection
+        },
+        highlight = {
+            A = 'DiffAdd', -- Added
+            D = 'DiffDelete', -- Deleted
+            M = 'DiffText', -- Modified
+            R = 'DiffChange', -- Renamed
+        },
+    },
+}
 
 local layout = {
     left_win = nil,
     right_win = nil,
-}
-
-local highlight_map = {
-    A = 'DiffAdd',
-    D = 'DiffDelete',
-    R = 'DiffChange',
-    M = 'DiffText',
 }
 
 -- helper to calculate file similarity
@@ -23,7 +30,7 @@ local function calculate_similarity(file1, file2)
     end
 
     -- skip large files
-    if size1 >= 1024 * 1024 or size2 >= 1024 * 1024 then
+    if size1 >= M.config.rename.max_size or size2 >= M.config.rename.max_size then
         return 0
     end
 
@@ -79,6 +86,7 @@ local function setup_layout(with_qf)
     end
 end
 
+-- Edit a file in a specific window
 local function edit_in(winnr, file)
     vim.api.nvim_win_call(winnr, function()
         local current = vim.fs.abspath(vim.api.nvim_buf_get_name(vim.api.nvim_win_get_buf(winnr)))
@@ -146,25 +154,27 @@ local function diff_directories(left_dir, right_dir)
 
     -- Detect possible renames
     local renamed = {}
-    for left_rel, left_path in pairs(left_only) do
-        local best_match = { similarity = 0.5, path = nil }
+    if M.config.rename.detect then
+        for left_rel, left_path in pairs(left_only) do
+            local best_match = { similarity = M.config.rename.similarity, path = nil }
 
-        for right_rel, right_path in pairs(right_only) do
-            local similarity = calculate_similarity(left_path, right_path)
+            for right_rel, right_path in pairs(right_only) do
+                local similarity = calculate_similarity(left_path, right_path)
 
-            if similarity > best_match.similarity then
-                best_match = {
-                    similarity = similarity,
-                    path = right_path,
-                    rel = right_rel,
-                }
+                if similarity > best_match.similarity then
+                    best_match = {
+                        similarity = similarity,
+                        path = right_path,
+                        rel = right_rel,
+                    }
+                end
             end
-        end
 
-        if best_match.path then
-            renamed[left_rel] = best_match.rel
-            all_paths[left_rel].right = best_match.path
-            right_only[best_match.rel] = nil
+            if best_match.path then
+                renamed[left_rel] = best_match.rel
+                all_paths[left_rel].right = best_match.path
+                right_only[best_match.rel] = nil
+            end
         end
     end
 
@@ -219,7 +229,27 @@ local function diff_directories(left_dir, right_dir)
     vim.cmd.cfirst()
 end
 
-function M.setup()
+-- Diff two files or directories
+---@param left string
+---@param right string
+function M.diff(left, right)
+    if not left or not right then
+        vim.notify('Both arguments are required', vim.log.levels.ERROR)
+        return
+    end
+
+    if vim.fn.isdirectory(left) == 1 and vim.fn.isdirectory(right) == 1 then
+        diff_directories(left, right)
+    elseif vim.fn.filereadable(left) == 1 and vim.fn.filereadable(right) == 1 then
+        diff_files(left, right)
+    else
+        vim.notify('Both arguments must be files or directories', vim.log.levels.ERROR)
+    end
+end
+
+function M.setup(config)
+    M.config = vim.tbl_deep_extend('force', M.config, config or {})
+
     local group = vim.api.nvim_create_augroup('myplugins-difftool', { clear = true })
     local ns_id = vim.api.nvim_create_namespace('difftool_qf')
 
@@ -233,7 +263,7 @@ function M.setup()
             -- Map status codes to highlight groups
             for i, line in ipairs(lines) do
                 local status = line:match('^(%a) ')
-                local hl_group = highlight_map[status]
+                local hl_group = M.config.highlight[status]
 
                 if hl_group then
                     vim.hl.range(args.buf, ns_id, hl_group, { i - 1, 0 }, { i - 1, 1 })
@@ -268,16 +298,7 @@ function M.setup()
 
     vim.api.nvim_create_user_command('DiffTool', function(opts)
         if #opts.fargs >= 2 then
-            local left = opts.fargs[1]
-            local right = opts.fargs[2]
-
-            if vim.fn.isdirectory(left) == 1 and vim.fn.isdirectory(right) == 1 then
-                diff_directories(left, right)
-            elseif vim.fn.filereadable(left) == 1 and vim.fn.filereadable(right) == 1 then
-                diff_files(left, right)
-            else
-                vim.notify('Both arguments must be files or directories', vim.log.levels.ERROR)
-            end
+            M.diff(opts.fargs[1], opts.fargs[2])
         else
             vim.notify('Usage: DiffTool <left> <right>', vim.log.levels.ERROR)
         end
