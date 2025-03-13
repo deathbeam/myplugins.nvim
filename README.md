@@ -47,7 +47,8 @@ require('lspconfig')['<YOUR_LSP_SERVER>'].setup {
 ```
 
 ### cmdcomplete
-> [!WARNING] Requires neovim 0.11.0+
+> [!WARNING]
+> Requires neovim 0.11.0+
 
 Command-line autocompletion
 
