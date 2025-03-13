@@ -34,12 +34,19 @@ local function calculate_similarity(file1, file2)
         return 0
     end
 
-    local content1 = vim.fn.readfile(file1)
-    local content2 = vim.fn.readfile(file2)
+    -- Safely read files
+    local ok1, content1 = pcall(vim.fn.readfile, file1)
+    local ok2, content2 = pcall(vim.fn.readfile, file2)
+    if not ok1 or not ok2 then
+        return 0
+    end
 
     -- count matching lines
     local common_lines = 0
     local total_lines = math.max(#content1, #content2)
+    if total_lines == 0 then
+        return 0
+    end
 
     -- build frequency map of non-empty lines
     local seen = {}
@@ -173,6 +180,8 @@ local function diff_directories(left_dir, right_dir)
             if best_match.path then
                 renamed[left_rel] = best_match.rel
                 all_paths[left_rel].right = best_match.path
+                all_paths[best_match.rel] = nil
+                left_only[left_rel] = nil
                 right_only[best_match.rel] = nil
             end
         end
