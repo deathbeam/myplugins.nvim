@@ -5,7 +5,6 @@ local M = {
 }
 
 local fzf = require('fzf-lua')
-local utils = require('myplugins.utils')
 
 -- Open today's diary entry
 function M.today()
@@ -49,7 +48,7 @@ function M.new(title)
 end
 
 function M.setup(config)
-    M.config = utils.cfg(M.config, config)
+    M.config = vim.tbl_deep_extend('force', M.config, config or {})
 end
 
 return M

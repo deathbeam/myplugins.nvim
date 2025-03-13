@@ -1,9 +1,10 @@
 local M = {}
 
-local utils = require('myplugins.utils')
-
 function M.setup()
-    utils.au('BufReadPre', {
+    local group = vim.api.nvim_create_augroup('myplugins-bigfile', { clear = true })
+
+    vim.api.nvim_create_autocmd('BufReadPre', {
+        group = group,
         pattern = '*',
         desc = 'myplugins: Disable features for large files',
         callback = function(args)

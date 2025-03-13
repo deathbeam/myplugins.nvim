@@ -19,8 +19,6 @@ local M = {
     },
 }
 
-local utils = require('myplugins.utils')
-
 local root_cache = {}
 local function find_root(markers)
     local bufname = vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf())
@@ -38,9 +36,12 @@ local function find_root(markers)
 end
 
 function M.setup(config)
-    M.config = utils.cfg(M.config, config)
+    M.config = vim.tbl_deep_extend('force', M.config, config or {})
 
-    utils.au({ 'VimEnter', 'BufEnter' }, {
+    local group = vim.api.nvim_create_augroup('myplugins-rooter', { clear = true })
+
+    vim.api.nvim_create_autocmd({ 'VimEnter', 'BufEnter' }, {
+        group = group,
         desc = 'myplugins: Set current directory to project root',
         pattern = '*',
         nested = true,

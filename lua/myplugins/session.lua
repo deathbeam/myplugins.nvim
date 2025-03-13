@@ -7,8 +7,6 @@ local M = {
     },
 }
 
-local utils = require('myplugins.utils')
-
 local function get_session_file()
     if not vim.g.should_save_session then
         return nil
@@ -35,9 +33,12 @@ local function get_session_file()
 end
 
 function M.setup(config)
-    config = utils.cfg(M.config, config)
+    M.config = vim.tbl_deep_extend('force', M.config, config or {})
 
-    utils.au('VimLeavePre', {
+    local group = vim.api.nvim_create_augroup('myplugins-session', { clear = true })
+
+    vim.api.nvim_create_autocmd('VimLeavePre', {
+        group = group,
         desc = 'myplugins: Save session on exit',
         callback = function()
             local session_file = get_session_file()
@@ -48,7 +49,8 @@ function M.setup(config)
         end,
     })
 
-    utils.au('VimEnter', {
+    vim.api.nvim_create_autocmd('VimEnter', {
+        group = group,
         desc = 'myplugins: Restore session on enter',
         callback = function()
             vim.g.should_save_session = vim.fn.argc() == 0

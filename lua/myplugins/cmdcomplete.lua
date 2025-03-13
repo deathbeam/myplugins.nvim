@@ -1,8 +1,7 @@
 local M = {}
 
-local utils = require('myplugins.utils')
-
 function M.setup()
+    local group = vim.api.nvim_create_augroup('myplugins-cmdcomplete', { clear = true })
     local term = vim.api.nvim_replace_termcodes('<C-@>', true, true, true)
 
     vim.cmd([[set wildcharm=<C-@>]])
@@ -12,7 +11,8 @@ function M.setup()
     vim.keymap.set('c', '<Up>', '<End><C-U><Up>', { silent = true })
     vim.keymap.set('c', '<Down>', '<End><C-U><Down>', { silent = true })
 
-    utils.au('CmdlineChanged', {
+    vim.api.nvim_create_autocmd('CmdlineChanged', {
+        group = group,
         desc = 'Auto show command line completion',
         pattern = ':',
         callback = function()

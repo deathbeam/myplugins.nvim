@@ -1,11 +1,13 @@
 local M = {}
 
-local utils = require('myplugins.utils')
 local lastlnum = nil
 
 function M.setup()
+    local group = vim.api.nvim_create_augroup('myplugins-diagnostics', { clear = true })
+
     -- Store original DiagnosticUnnecessary colors to reuse
-    utils.au('ColorScheme', {
+    vim.api.nvim_create_autocmd('ColorScheme', {
+        group = group,
         callback = function()
             local orig_hl = vim.api.nvim_get_hl(0, { name = 'DiagnosticUnnecessary' })
             ---@diagnostic disable-next-line: param-type-mismatch
@@ -14,7 +16,8 @@ function M.setup()
         end,
     })
 
-    utils.au('CursorHold', {
+    vim.api.nvim_create_autocmd('CursorHold', {
+        group = group,
         desc = 'Show diagnostics',
         callback = function()
             if vim.api.nvim_get_mode().mode ~= 'n' then
@@ -39,7 +42,8 @@ function M.setup()
         end,
     })
 
-    utils.au({ 'DiagnosticChanged', 'CursorMoved' }, {
+    vim.api.nvim_create_autocmd({ 'DiagnosticChanged', 'CursorMoved' }, {
+        group = group,
         callback = function(args)
             local ns = vim.api.nvim_create_namespace('diagnostic_unnecessary_hl_override')
             local bufnr = args.buf

@@ -11,10 +11,13 @@ local utils = require('myplugins.utils')
 local methods = vim.lsp.protocol.Methods
 
 function M.setup(config)
-    M.config = utils.cfg(M.config, config)
+    M.config = vim.tbl_deep_extend('force', M.config, config or {})
 
+    local group = vim.api.nvim_create_augroup('myplugins-signature', { clear = true })
     local entry = utils.entry()
-    utils.au({ 'CursorMovedI', 'InsertEnter' }, {
+
+    vim.api.nvim_create_autocmd({ 'CursorMovedI', 'InsertEnter' }, {
+        group = group,
         desc = 'Auto show LSP signature help',
         callback = function(args)
             local line = vim.api.nvim_get_current_line()

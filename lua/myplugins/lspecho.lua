@@ -7,7 +7,6 @@ local M = {
     },
 }
 
-local utils = require('myplugins.utils')
 local series = {}
 local last_message = ''
 local last_echo = 0
@@ -144,7 +143,7 @@ function M.message()
 end
 
 function M.setup(config)
-    M.config = utils.cfg(M.config, config)
+    M.config = vim.tbl_deep_extend('force', M.config, config or {})
 
     if M.config.attach_log then
         vim.lsp.handlers['window/logMessage'] = function(...)

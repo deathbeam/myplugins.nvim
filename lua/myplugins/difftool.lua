@@ -1,7 +1,5 @@
 local M = {}
 
-local utils = require('myplugins.utils')
-
 local layout = {
     left_win = nil,
     right_win = nil,
@@ -212,9 +210,11 @@ local function diff_directories(left_dir, right_dir)
 end
 
 function M.setup()
+    local group = vim.api.nvim_create_augroup('myplugins-difftool', { clear = true })
     local ns_id = vim.api.nvim_create_namespace('difftool_qf')
 
-    utils.au('BufWinEnter', {
+    vim.api.nvim_create_autocmd('BufWinEnter', {
+        group = group,
         pattern = 'quickfix',
         callback = function()
             local bufnr = vim.api.nvim_get_current_buf()
@@ -233,7 +233,8 @@ function M.setup()
         end,
     })
 
-    utils.au('BufWinEnter', {
+    vim.api.nvim_create_autocmd('BufWinEnter', {
+        group = group,
         pattern = '*',
         callback = function(args)
             local qf_info = vim.fn.getqflist({ idx = 0 })

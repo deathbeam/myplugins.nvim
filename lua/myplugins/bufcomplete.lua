@@ -184,17 +184,22 @@ function M.setup(config)
     state.entries.completion = utils.entry()
     state.entries.info = utils.entry()
 
-    utils.au('TextChangedI', {
+    local group = vim.api.nvim_create_augroup('myplugins-bufcomplete', { clear = true })
+
+    vim.api.nvim_create_autocmd('TextChangedI', {
+        group = group,
         desc = 'Auto show completion',
         callback = text_changed,
     })
 
-    utils.au('CompleteChanged', {
+    vim.api.nvim_create_autocmd('CompleteChanged', {
+        group = group,
         desc = 'Auto show LSP documentation',
         callback = complete_changed,
     })
 
-    utils.au('LspAttach', {
+    vim.api.nvim_create_autocmd('LspAttach', {
+        group = group,
         desc = 'Attach completion events',
         callback = function(event)
             local client = utils.get_client(event.buf, methods.textDocument_completion)
