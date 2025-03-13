@@ -44,6 +44,15 @@ BIGFILE                                               *myplugins.nvim-bigfile*
 Automatically disable stuff for large files
 
 
+DEFAULT CONFIG ~
+
+>lua
+    {
+        max_size = 1024 * 1024,
+    }
+<
+
+
 BUFCOMPLETE                                       *myplugins.nvim-bufcomplete*
 
 LSP + treesitter autocompletion
@@ -163,18 +172,23 @@ DEFAULT CONFIG ~
 >lua
     {
         dirs = {
-            '.git',
             '.git/',
             '_darcs/',
             '.hg/',
             '.bzr/',
             '.svn/',
             '.editorconfig',
+            '.venv/',
+            'node_modules/',
             'Makefile',
+            'CMakeLists.txt',
             '.pylintrc',
             'requirements.txt',
             'setup.py',
+            'pyproject.toml',
             'package.json',
+            'Cargo.toml',
+            'go.mod',
             'mvnw',
             'gradlew',
         },
