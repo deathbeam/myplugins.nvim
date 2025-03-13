@@ -10,7 +10,7 @@ local M = {
 local utils = require('myplugins.utils')
 
 local function get_session_file()
-    if vim.fn.argc() > 0 or vim.tbl_isempty(vim.api.nvim_list_uis()) then
+    if not vim.g.should_save_session then
         return nil
     end
 
@@ -51,6 +51,9 @@ function M.setup(config)
     utils.au('VimEnter', {
         desc = 'myplugins: Restore session on enter',
         callback = function()
+            vim.g.should_save_session = vim.fn.argc() == 0
+                and not vim.tbl_isempty(vim.api.nvim_list_uis())
+                and #vim.v.argv == 0
             local session_file = get_session_file()
             if session_file and vim.fn.filereadable(session_file) == 1 then
                 vim.notify('Loading session...', vim.log.levels.INFO)
