@@ -84,18 +84,18 @@ local function diff_directories(left_dir, right_dir)
     -- Convert to quickfix entries
     local qf_entries = {}
     for rel_path, files in pairs(all_paths) do
-        local status = 'MODIFIED' -- Modified (both files exist)
+        local status = 'M' -- Modified (both files exist)
         if not files.left then
-            status = 'ADDED' -- Added (only in right)
+            status = 'A' -- Added (only in right)
             files.left = left_dir .. rel_path
         elseif not files.right then
-            status = 'DELETED' -- Deleted (only in left)
+            status = 'D' -- Deleted (only in left)
             files.right = right_dir .. rel_path
         end
 
         table.insert(qf_entries, {
-            filename = rel_path,
-            text = status,
+            filename = files.right,
+            text = status .. ' ' .. rel_path,
             user_data = {
                 diff = true,
                 rel = rel_path,
