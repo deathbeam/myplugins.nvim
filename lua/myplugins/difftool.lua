@@ -95,7 +95,7 @@ local function diff_directories(left_dir, right_dir)
 
         table.insert(qf_entries, {
             filename = files.right,
-            text = status .. ' ' .. rel_path,
+            text = status,
             user_data = {
                 diff = true,
                 rel = rel_path,
@@ -120,8 +120,7 @@ local function diff_directories(left_dir, right_dir)
             local out = {}
             for item = info.start_idx, info.end_idx do
                 local entry = items[item]
-                local text = entry.text
-                table.insert(out, text)
+                table.insert(out, entry.text .. ' ' .. entry.user_data.rel)
             end
             return out
         end,
@@ -143,11 +142,11 @@ function M.setup()
             local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
             for i, line in ipairs(lines) do
                 local hl_group
-                if line:match('^A') then
+                if line:match('^A ') then
                     hl_group = 'DiffAdd'
-                elseif line:match('^D') then
+                elseif line:match('^D ') then
                     hl_group = 'DiffDelete'
-                elseif line:match('^M') then
+                elseif line:match('^M ') then
                     hl_group = 'DiffText'
                 end
 
