@@ -1,10 +1,59 @@
 local M = {}
 
 local utils = require('myplugins.utils')
+
 local layout = {
     left_win = nil,
     right_win = nil,
 }
+
+local highlight_map = {
+    A = 'DiffAdd',
+    D = 'DiffDelete',
+    R = 'DiffChange',
+    M = 'DiffText',
+}
+
+-- helper to calculate file similarity
+local function calculate_similarity(file1, file2)
+    local size1 = vim.fn.getfsize(file1)
+    local size2 = vim.fn.getfsize(file2)
+
+    -- skip empty files or files with vastly different sizes
+    if size1 <= 0 or size2 <= 0 or size1 / size2 > 2 or size2 / size1 > 2 then
+        return 0
+    end
+
+    -- skip large files
+    if size1 >= 1024 * 1024 or size2 >= 1024 * 1024 then
+        return 0
+    end
+
+    local content1 = vim.fn.readfile(file1)
+    local content2 = vim.fn.readfile(file2)
+
+    -- count matching lines
+    local common_lines = 0
+    local total_lines = math.max(#content1, #content2)
+
+    -- build frequency map of non-empty lines
+    local seen = {}
+    for _, line in ipairs(content1) do
+        if #line > 0 then
+            seen[line] = (seen[line] or 0) + 1
+        end
+    end
+
+    -- count matching lines
+    for _, line in ipairs(content2) do
+        if #line > 0 and seen[line] and seen[line] > 0 then
+            seen[line] = seen[line] - 1
+            common_lines = common_lines + 1
+        end
+    end
+
+    return common_lines / total_lines
+end
 
 -- Set up a consistent layout with two diff windows and quickfix at bottom
 local function setup_layout()
@@ -53,32 +102,69 @@ local function diff_directories(left_dir, right_dir)
     -- Create a map of all relative paths
     local all_paths = {}
 
-    -- Process left files
-    local left_files = vim.fs.find(function()
-        return true
-    end, { limit = math.huge, path = left_dir, follow = false })
-    for _, full_path in ipairs(left_files) do
-        local rel_path = full_path:sub(#left_dir + 1)
-        full_path = vim.fn.resolve(full_path)
+    -- Track potential renames (files only in one dir)
+    local left_only = {}
+    local right_only = {}
 
-        if vim.fn.isdirectory(full_path) == 0 then
-            all_paths[rel_path] = all_paths[rel_path] or { left = nil, right = nil }
-            all_paths[rel_path].left = full_path
+    -- Helper to process files from a directory
+    local function process_files(dir_path, is_left)
+        local files = vim.fs.find(function()
+            return true
+        end, { limit = math.huge, path = dir_path, follow = false })
+
+        for _, full_path in ipairs(files) do
+            local rel_path = full_path:sub(#dir_path + 1)
+            full_path = vim.fn.resolve(full_path)
+
+            if vim.fn.isdirectory(full_path) == 0 then
+                all_paths[rel_path] = all_paths[rel_path] or { left = nil, right = nil }
+
+                if is_left then
+                    all_paths[rel_path].left = full_path
+                    if not all_paths[rel_path].right then
+                        left_only[rel_path] = full_path
+                    end
+                else
+                    all_paths[rel_path].right = full_path
+                    if not all_paths[rel_path].left then
+                        right_only[rel_path] = full_path
+                    end
+                end
+            end
         end
     end
 
-    -- Process right files
-    local right_files = vim.fs.find(function()
-        return true
-    end, { limit = math.huge, path = right_dir, follow = false })
-    for _, full_path in ipairs(right_files) do
-        local rel_path = full_path:sub(#right_dir + 1)
-        full_path = vim.fn.resolve(full_path)
+    -- Process both directories
+    process_files(left_dir, true)
+    process_files(right_dir, false)
 
-        if vim.fn.isdirectory(full_path) == 0 then
-            all_paths[rel_path] = all_paths[rel_path] or { left = nil, right = nil }
-            all_paths[rel_path].right = full_path
+    -- Detect possible renames
+    local renamed = {}
+    for left_rel, left_path in pairs(left_only) do
+        local best_match = { similarity = 0.5, path = nil } -- minimum 50% similarity threshold
+
+        for right_rel, right_path in pairs(right_only) do
+            local similarity = calculate_similarity(left_path, right_path)
+
+            if similarity > best_match.similarity then
+                best_match = {
+                    similarity = similarity,
+                    path = right_path,
+                    rel = right_rel,
+                }
+            end
         end
+
+        if best_match.path then
+            renamed[left_rel] = best_match.rel
+            all_paths[left_rel].right = best_match.path
+            right_only[best_match.rel] = nil
+        end
+    end
+
+    -- Remove detected renames from left_only
+    for left_rel in pairs(renamed) do
+        left_only[left_rel] = nil
     end
 
     -- Convert to quickfix entries
@@ -91,6 +177,8 @@ local function diff_directories(left_dir, right_dir)
         elseif not files.right then
             status = 'D' -- Deleted (only in left)
             files.right = right_dir .. rel_path
+        elseif renamed[rel_path] then
+            status = 'R' -- Renamed
         end
 
         table.insert(qf_entries, {
@@ -138,20 +226,15 @@ function M.setup()
         callback = function()
             local bufnr = vim.api.nvim_get_current_buf()
             vim.api.nvim_buf_clear_namespace(bufnr, ns_id, 0, -1)
-
             local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+
+            -- Map status codes to highlight groups
             for i, line in ipairs(lines) do
-                local hl_group
-                if line:match('^A ') then
-                    hl_group = 'DiffAdd'
-                elseif line:match('^D ') then
-                    hl_group = 'DiffDelete'
-                elseif line:match('^M ') then
-                    hl_group = 'DiffText'
-                end
+                local status = line:match('^(%a) ')
+                local hl_group = highlight_map[status]
 
                 if hl_group then
-                    vim.api.nvim_buf_add_highlight(bufnr, ns_id, hl_group, i - 1, 0, -1)
+                    vim.api.nvim_buf_add_highlight(bufnr, ns_id, hl_group, i - 1, 0, 2)
                 end
             end
         end,
