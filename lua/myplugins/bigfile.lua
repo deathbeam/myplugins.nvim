@@ -16,9 +16,15 @@ function M.setup()
 
             vim.api.nvim_buf_set_var(bufnr, 'bigfile_disable', 1)
 
-            -- Disable treesitter
-            require('nvim-treesitter.configs').get_module('indent').disable = function()
-                return vim.api.nvim_buf_get_var(bufnr, 'bigfile_disable') == 1
+            -- Disable treesitter indent
+            local ok, ts_configs = pcall(require, 'nvim-treesitter.configs')
+            if ok and ts_configs then
+                local indent = ts_configs.get_module('indent')
+                if indent then
+                    indent.disable = function()
+                        return vim.api.nvim_buf_get_var(bufnr, 'bigfile_disable') == 1
+                    end
+                end
             end
 
             -- Disable autoindent
