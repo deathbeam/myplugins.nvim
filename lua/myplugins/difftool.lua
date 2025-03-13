@@ -53,7 +53,7 @@ local function calculate_similarity(file1, file2)
     return common_lines / total_lines
 end
 
--- Set up a consistent layout with two diff windows and quickfix at bottom
+-- Set up a consistent layout with two diff windows
 local function setup_layout()
     if layout.left_win and vim.api.nvim_win_is_valid(layout.left_win) then
         return false
@@ -63,7 +63,7 @@ local function setup_layout()
     layout.left_win = vim.api.nvim_get_current_win()
 
     -- Create right window
-    vim.cmd('vsplit')
+    vim.cmd.vsplit()
     layout.right_win = vim.api.nvim_get_current_win()
 end
 
