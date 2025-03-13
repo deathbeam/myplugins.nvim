@@ -3,9 +3,15 @@ local M = {}
 function M.setup(config)
     config = config or {}
     for key, value in pairs(config) do
-        local plugin = require('myplugins.' .. key)
-        if plugin and plugin.setup then
-            plugin.setup(value)
+        local ok, plugin = pcall(require, 'myplugins.' .. key)
+        if ok and plugin and type(plugin.setup) == 'function' then
+            local setup_ok, err = pcall(plugin.setup, value)
+            if not setup_ok then
+                vim.notify(
+                    'Error setting up plugin ' .. key .. ': ' .. tostring(err),
+                    vim.log.levels.ERROR
+                )
+            end
         else
             vim.notify(
                 'Plugin ' .. key .. ' not found or does not have a setup function',

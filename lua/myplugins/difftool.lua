@@ -29,16 +29,8 @@ local function edit_in(winnr, file)
             return
         end
 
-        if file then
-            -- Read the file if it exists
-            vim.cmd('edit ' .. vim.fn.fnameescape(file))
-        else
-            -- Create an empty buffer for added/removed files
-            vim.cmd('enew')
-            vim.bo.buftype = 'nofile'
-            vim.bo.bufhidden = 'wipe'
-            vim.bo.swapfile = false
-        end
+        -- Read the file into the buffer
+        vim.cmd.edit(vim.fn.fnameescape(file))
     end)
 end
 
@@ -92,16 +84,18 @@ local function diff_directories(left_dir, right_dir)
     -- Convert to quickfix entries
     local qf_entries = {}
     for rel_path, files in pairs(all_paths) do
-        local status = 'M' -- Modified (both files exist)
+        local status = 'MODIFIED' -- Modified (both files exist)
         if not files.left then
-            status = 'A' -- Added (only in right)
+            status = 'ADDED' -- Added (only in right)
+            files.left = left_dir .. rel_path
         elseif not files.right then
-            status = 'D' -- Deleted (only in left)
+            status = 'DELETED' -- Deleted (only in left)
+            files.right = right_dir .. rel_path
         end
 
         table.insert(qf_entries, {
-            filename = files.right or files.left,
-            text = status .. ' ' .. rel_path,
+            filename = rel_path,
+            text = status,
             user_data = {
                 diff = true,
                 rel = rel_path,
