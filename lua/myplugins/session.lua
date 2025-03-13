@@ -52,8 +52,9 @@ function M.setup(config)
         desc = 'myplugins: Restore session on enter',
         callback = function()
             vim.g.should_save_session = vim.fn.argc() == 0
+                and #vim.v.argv <= 2
                 and not vim.tbl_isempty(vim.api.nvim_list_uis())
-                and #vim.v.argv == 0
+
             local session_file = get_session_file()
             if session_file and vim.fn.filereadable(session_file) == 1 then
                 vim.notify('Loading session...', vim.log.levels.INFO)
