@@ -54,10 +54,17 @@ local function calculate_similarity(file1, file2)
 end
 
 -- Set up a consistent layout with two diff windows
-local function setup_layout()
-    if layout.left_win and vim.api.nvim_win_is_valid(layout.left_win) then
+local function setup_layout(with_qf)
+    if
+        layout.left_win
+        and vim.api.nvim_win_is_valid(layout.left_win)
+        and layout.right_win
+        and vim.api.nvim_win_is_valid(layout.right_win)
+    then
         return false
     end
+
+    vim.cmd.only()
 
     -- Save current window as left window
     layout.left_win = vim.api.nvim_get_current_win()
@@ -65,6 +72,11 @@ local function setup_layout()
     -- Create right window
     vim.cmd.vsplit()
     layout.right_win = vim.api.nvim_get_current_win()
+
+    -- Create quickfix window
+    if with_qf then
+        vim.cmd('botright copen')
+    end
 end
 
 local function edit_in(winnr, file)
@@ -82,8 +94,8 @@ local function edit_in(winnr, file)
 end
 
 -- Diff two files
-local function diff_files(left_file, right_file)
-    setup_layout()
+local function diff_files(left_file, right_file, with_qf)
+    setup_layout(with_qf)
 
     edit_in(layout.left_win, left_file)
     edit_in(layout.right_win, right_file)
@@ -95,8 +107,6 @@ end
 
 -- Diff two directories
 local function diff_directories(left_dir, right_dir)
-    setup_layout()
-
     -- Create a map of all relative paths
     local all_paths = {}
     local left_only = {}
@@ -205,7 +215,7 @@ local function diff_directories(left_dir, right_dir)
         end,
     })
 
-    vim.cmd('botright copen')
+    setup_layout(true)
     vim.cmd.cfirst()
 end
 
@@ -251,7 +261,7 @@ function M.setup()
             end
 
             vim.schedule(function()
-                diff_files(entry.user_data.left, entry.user_data.right)
+                diff_files(entry.user_data.left, entry.user_data.right, true)
             end)
         end,
     })
