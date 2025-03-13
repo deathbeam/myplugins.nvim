@@ -115,6 +115,16 @@ local function diff_directories(left_dir, right_dir)
         nr = '$',
         title = 'DiffTool',
         items = qf_entries,
+        quickfixtextfunc = function(info)
+            local items = vim.fn.getqflist({ id = info.id, items = 1 }).items
+            local out = {}
+            for item = info.start_idx, info.end_idx do
+                local entry = items[item]
+                local text = entry.text
+                table.insert(out, text)
+            end
+            return out
+        end,
     })
 
     vim.cmd('botright copen')
@@ -122,6 +132,32 @@ local function diff_directories(left_dir, right_dir)
 end
 
 function M.setup()
+    local ns_id = vim.api.nvim_create_namespace('difftool_qf')
+
+    utils.au('BufWinEnter', {
+        pattern = 'quickfix',
+        callback = function()
+            local bufnr = vim.api.nvim_get_current_buf()
+            vim.api.nvim_buf_clear_namespace(bufnr, ns_id, 0, -1)
+
+            local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+            for i, line in ipairs(lines) do
+                local hl_group
+                if line:match('^A') then
+                    hl_group = 'DiffAdd'
+                elseif line:match('^D') then
+                    hl_group = 'DiffDelete'
+                elseif line:match('^M') then
+                    hl_group = 'DiffText'
+                end
+
+                if hl_group then
+                    vim.api.nvim_buf_add_highlight(bufnr, ns_id, hl_group, i - 1, 0, -1)
+                end
+            end
+        end,
+    })
+
     utils.au('BufWinEnter', {
         pattern = '*',
         callback = function(args)
