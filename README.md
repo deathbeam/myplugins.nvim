@@ -17,14 +17,22 @@ require('myplugins').setup {
 }
 ```
 
-## Plugins
-
-### bigfile
+## bigfile
 Automatically disable stuff for large files
 
-### bufcomplete
+## bufcomplete
 LSP + treesitter autocompletion
 
+### Default config
+```lua
+{
+    border = nil, -- Documentation border style
+    entry_mapper = nil, -- Custom completion entry mapper
+    debounce_delay = 100,
+}
+```
+
+### Usage
 For best completion experience:
 
 ```lua
@@ -46,18 +54,19 @@ require('lspconfig')['<YOUR_LSP_SERVER>'].setup {
 }
 ```
 
-### cmdcomplete
+## cmdcomplete
+Command-line autocompletion
+
 > [!WARNING]
 > Requires neovim 0.11.0+
 
-Command-line autocompletion
-
-### diagnostics
+## diagnostics
 Automatically show diagnostic popup on cursor hover and disable `DiagnosticUnnecessary` highlighting for code under cursor.
 
-### difftool
+## difftool
 `DiffTool <left> <right>` command for integration with `git difftool` and `git difftool --dir-diff`.
 
+### Usage
 Add this to your `gitconfig`:
 
 ```ini
@@ -68,32 +77,89 @@ Add this to your `gitconfig`:
     cmd = nvim -c \"DiffTool $LOCAL $REMOTE\"
 ```
 
-### lspecho
+## lspecho
 Echo LSP progress to cmdline
 
-### rooter
+### Default config
+```lua
+{
+    echo = true, -- Echo progress messages, if set to false you can use .message() to get the current message
+    decay = 3000, -- Message decay time in milliseconds
+    interval = 100, -- Minimum time between echo updates in milliseconds
+    attach_log = false, -- Attach to logMessage and showMessage
+}
+```
+
+## rooter
 Automatically changes working directory to project root.
 
-### session
+### Default config
+```lua
+{
+    dirs = {
+        '.git',
+        '.git/',
+        '_darcs/',
+        '.hg/',
+        '.bzr/',
+        '.svn/',
+        '.editorconfig',
+        'Makefile',
+        '.pylintrc',
+        'requirements.txt',
+        'setup.py',
+        'package.json',
+        'mvnw',
+        'gradlew',
+    },
+}
+```
+
+## session
 Automatically saves and restores session in predefined folders (default ~/git)
 
-### signature
+### Default config
+```lua
+{
+    session_dir = vim.fn.stdpath('data') .. '/sessions/',
+    dirs = {
+        vim.fn.expand('~/git'),
+    },
+}
+```
+
+## signature
 Automatically show function signature on cursor hover in insert mode.
 
-### undotree
+### Default config
+```lua
+{
+    border = nil, -- Signature border style
+    width = 80, -- Max width of signature window
+    height = 25, -- Max height of signature window
+    debounce_delay = 100,
+}
+```
+
+## undotree
 Undo tree visualization for `fzf-lua`.
 
-Usage:
-
+### Usage
 ```lua
 vim.keymap.set('n', '<leader>fu', require('myplugins.undotree').show)
 ```
 
-### wiki
+## wiki
 Simple wiki/note-taking functionality using `fzf-lua`.
 
-Usage:
+### Default config
+```lua
+{
+    dir = vim.fn.expand('~/vimwiki'),
+}
+```
 
+### Usage
 ```lua
 local wiki = require('myplugins.wiki')
 vim.keymap.set('n', '<leader>wt', wiki.today)
