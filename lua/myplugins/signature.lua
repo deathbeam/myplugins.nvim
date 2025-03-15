@@ -32,9 +32,7 @@ function M.setup(config)
             end
 
             local before_line = line:sub(1, col)
-            local has_trigger_char = vim.iter(
-                client.server_capabilities.signatureHelpProvider.triggerCharacters or {}
-            )
+            local has_trigger_char = vim.iter(client.server_capabilities.signatureHelpProvider.triggerCharacters or {})
                 :filter(function(c)
                     return string.find(before_line, '[' .. c .. ']') ~= nil
                 end)

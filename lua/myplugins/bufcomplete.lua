@@ -59,10 +59,8 @@ local function complete_treesitter(bufnr, prefix, cmp_start)
             local start_line_node, _, _ = node:start()
             local end_line_node, _, _ = node:end_()
 
-            local full_text = vim.trim(
-                vim.api.nvim_buf_get_lines(bufnr, start_line_node, end_line_node + 1, false)[1]
-                    or ''
-            )
+            local full_text =
+                vim.trim(vim.api.nvim_buf_get_lines(bufnr, start_line_node, end_line_node + 1, false)[1] or '')
 
             full_text = '```' .. ft .. '\n' .. full_text .. '\n```'
             items[#items + 1] = {
@@ -116,8 +114,7 @@ local function complete_changed(args)
     local selected = cur_info.selected
 
     utils.debounce(state.entries.info, M.config.debounce_delay, function()
-        local completion_item =
-            vim.tbl_get(cur_item or {}, 'user_data', 'nvim', 'lsp', 'completion_item')
+        local completion_item = vim.tbl_get(cur_item or {}, 'user_data', 'nvim', 'lsp', 'completion_item')
         if not completion_item then
             return
         end
@@ -127,37 +124,31 @@ local function complete_changed(args)
             return
         end
 
-        return utils.request(
-            client,
-            methods.completionItem_resolve,
-            completion_item,
-            function(result)
-                local docs = vim.tbl_get(result, 'documentation', 'value')
-                if not docs or #docs == 0 then
-                    return
-                end
+        return utils.request(client, methods.completionItem_resolve, completion_item, function(result)
+            local docs = vim.tbl_get(result, 'documentation', 'value')
+            if not docs or #docs == 0 then
+                return
+            end
 
-                local info = vim.fn.complete_info()
-                if not info.items or not info.selected or info.selected ~= selected then
-                    return
-                end
+            local info = vim.fn.complete_info()
+            if not info.items or not info.selected or info.selected ~= selected then
+                return
+            end
 
-                local wininfo = vim.api.nvim__complete_set(selected, { info = docs })
-                if not wininfo.winid or not wininfo.bufnr then
-                    return
-                end
+            local wininfo = vim.api.nvim__complete_set(selected, { info = docs })
+            if not wininfo.winid or not wininfo.bufnr then
+                return
+            end
 
-                vim.api.nvim_win_set_config(wininfo.winid, {
-                    border = M.config.border,
-                    focusable = false,
-                })
+            vim.api.nvim_win_set_config(wininfo.winid, {
+                border = M.config.border,
+                focusable = false,
+            })
 
-                vim.treesitter.start(wininfo.bufnr, 'markdown')
-                vim.wo[wininfo.winid].conceallevel = 3
-                vim.wo[wininfo.winid].concealcursor = 'niv'
-            end,
-            args.buf
-        )
+            vim.treesitter.start(wininfo.bufnr, 'markdown')
+            vim.wo[wininfo.winid].conceallevel = 3
+            vim.wo[wininfo.winid].concealcursor = 'niv'
+        end, args.buf)
     end)
 end
 

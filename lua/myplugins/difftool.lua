@@ -290,12 +290,7 @@ function M.setup(config)
             local entry = qf_list[qf_info.idx]
 
             -- Check if the entry is a diff entry
-            if
-                not entry
-                or not entry.user_data
-                or not entry.user_data.diff
-                or args.buf ~= entry.bufnr
-            then
+            if not entry or not entry.user_data or not entry.user_data.diff or args.buf ~= entry.bufnr then
                 return
             end
 
