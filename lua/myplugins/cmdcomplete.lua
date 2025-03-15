@@ -1,6 +1,10 @@
 local M = {}
 
 function M.setup()
+    if vim.fn.has('nvim-0.11.0') == 0 then
+        return
+    end
+
     local group = vim.api.nvim_create_augroup('myplugins-cmdcomplete', { clear = true })
     local term = vim.api.nvim_replace_termcodes('<C-@>', true, true, true)
 
