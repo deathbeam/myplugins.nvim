@@ -92,11 +92,18 @@ local function text_changed(args)
 
     utils.debounce(state.entries.completion, M.config.debounce_delay, function()
         local client = utils.get_client(args.buf, methods.textDocument_completion)
-        if client and vim.lsp.completion and vim.lsp.completion.trigger then
-            vim.lsp.completion.trigger()
-        else
-            complete_treesitter(args.buf, prefix, cmp_start)
+        if client and vim.lsp.completion then
+            if vim.lsp.completion.trigger then
+                vim.lsp.completion.trigger()
+                return
+            end
+            if vim.lsp.completion.get then
+                vim.lsp.completion.get()
+                return
+            end
         end
+
+        complete_treesitter(args.buf, prefix, cmp_start)
     end)
 end
 
