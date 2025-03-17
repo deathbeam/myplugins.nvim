@@ -151,9 +151,14 @@ Automatically saves and restores session in predefined folders (default ~/git)
 ```lua
 {
     session_dir = vim.fn.stdpath('data') .. '/sessions/',
+    -- Directories where sessions are automatically saved
     dirs = {
         vim.fn.expand('~/git'),
     },
+    -- Extra data to manage that is not normally saved in sessions
+    extra = {
+        quickfix = true, -- Save/load also quickfix lists
+    }
 }
 ```
 
