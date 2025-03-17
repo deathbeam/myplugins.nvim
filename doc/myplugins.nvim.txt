@@ -1,4 +1,4 @@
-*myplugins.nvim.txt*        For NVIM v0.10.0        Last change: 2025 March 16
+*myplugins.nvim.txt*        For NVIM v0.10.0        Last change: 2025 March 17
 
 ==============================================================================
 Table of Contents                           *myplugins.nvim-table-of-contents*
@@ -206,9 +206,14 @@ DEFAULT CONFIG ~
 >lua
     {
         session_dir = vim.fn.stdpath('data') .. '/sessions/',
+        -- Directories where sessions are automatically saved
         dirs = {
             vim.fn.expand('~/git'),
         },
+        -- Extra data to manage that is not normally saved in sessions
+        extra = {
+            quickfix = true, -- Save/load also quickfix lists
+        }
     }
 <
 
