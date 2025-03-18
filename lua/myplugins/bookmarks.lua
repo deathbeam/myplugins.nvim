@@ -88,4 +88,8 @@ function M.clear()
     vim.fn.setqflist({}, ' ', { id = quickfix_id })
 end
 
+function M.setup(config)
+    M.config = vim.tbl_deep_extend('force', M.config, config or {})
+end
+
 return M
