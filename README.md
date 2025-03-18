@@ -27,6 +27,35 @@ Automatically disable stuff for large files
 }
 ```
 
+## bookmarks
+Bookmark files and lines using quickfix list.
+
+### Default config
+```lua
+{
+    name = 'Bookmarks', -- Name of the quickfix list
+}
+```
+
+### Usage
+Best used with `session` plugin with `extra.quickfix = true` to automatically save and load quickfix lists (including bookmarks).
+
+```lua
+local bookmarks = require('myplugins.bookmarks')
+vim.keymap.set('n', '<leader>jj', bookmarks.toggle_file)
+vim.keymap.set('n', '<leader>jl', bookmarks.toggle_line)
+vim.keymap.set('n', '<leader>jk', bookmarks.load)
+vim.keymap.set('n', '<leader>jx', bookmarks.clear)
+vim.keymap.set('n', ']j', function()
+    bookmarks.load()
+    vim.cmd.cnext()
+end)
+vim.keymap.set('n', '[j', function()
+    bookmarks.load()
+    vim.cmd.cprev()
+end)
+```
+
 ## bufcomplete
 LSP + treesitter autocompletion
 
