@@ -48,11 +48,11 @@ vim.keymap.set('n', '<leader>jk', bookmarks.load)
 vim.keymap.set('n', '<leader>jx', bookmarks.clear)
 vim.keymap.set('n', ']j', function()
     bookmarks.load()
-    vim.cmd.cnext()
+    vim.cmd('silent! cnext')
 end)
 vim.keymap.set('n', '[j', function()
     bookmarks.load()
-    vim.cmd.cprev()
+    vim.cmd('silent! cprevious')
 end)
 ```
 
