@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/deathbeam/myplugins.nvim/compare/v0.2.0...v0.2.1) (2025-03-18)
+
+
+### Bug Fixes
+
+* add missing setup function to bookmarks plugin ([2b6b677](https://github.com/deathbeam/myplugins.nvim/commit/2b6b6772c04a6ad085a496eb84ab309e17285361))
+
 ## [0.2.0](https://github.com/deathbeam/myplugins.nvim/compare/v0.1.0...v0.2.0) (2025-03-18)
 
 
