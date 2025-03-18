@@ -1,4 +1,4 @@
-*myplugins.nvim.txt*        For NVIM v0.10.0        Last change: 2025 March 17
+*myplugins.nvim.txt*        For NVIM v0.10.0        Last change: 2025 March 18
 
 ==============================================================================
 Table of Contents                           *myplugins.nvim-table-of-contents*
@@ -6,6 +6,7 @@ Table of Contents                           *myplugins.nvim-table-of-contents*
 1. myplugins.nvim                              |myplugins.nvim-myplugins.nvim|
   - Usage                                               |myplugins.nvim-usage|
   - bigfile                                           |myplugins.nvim-bigfile|
+  - bookmarks                                       |myplugins.nvim-bookmarks|
   - bufcomplete                                   |myplugins.nvim-bufcomplete|
   - cmdcomplete                                   |myplugins.nvim-cmdcomplete|
   - diagnostics                                   |myplugins.nvim-diagnostics|
@@ -50,6 +51,42 @@ DEFAULT CONFIG ~
     {
         max_size = 1024 * 1024,
     }
+<
+
+
+BOOKMARKS                                           *myplugins.nvim-bookmarks*
+
+Bookmark files and lines using quickfix list.
+
+
+DEFAULT CONFIG ~
+
+>lua
+    {
+        name = 'Bookmarks', -- Name of the quickfix list
+    }
+<
+
+
+USAGE ~
+
+Best used with `session` plugin with `extra.quickfix = true` to automatically
+save and load quickfix lists (including bookmarks).
+
+>lua
+    local bookmarks = require('myplugins.bookmarks')
+    vim.keymap.set('n', '<leader>jj', bookmarks.toggle_file)
+    vim.keymap.set('n', '<leader>jl', bookmarks.toggle_line)
+    vim.keymap.set('n', '<leader>jk', bookmarks.load)
+    vim.keymap.set('n', '<leader>jx', bookmarks.clear)
+    vim.keymap.set('n', ']j', function()
+        bookmarks.load()
+        vim.cmd.cnext()
+    end)
+    vim.keymap.set('n', '[j', function()
+        bookmarks.load()
+        vim.cmd.cprev()
+    end)
 <
 
 
