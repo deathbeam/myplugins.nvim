@@ -24,11 +24,7 @@ local function toggle_quickfix_item(entry)
     local qf_list = vim.fn.getqflist({ id = id, items = 1 }).items
     local found_idx = nil
     for i, item in ipairs(qf_list) do
-        if
-            item.bufnr
-            and item.bufnr == entry.bufnr
-            and (entry.text == nil or (item.lnum == entry.lnum and item.text == entry.text))
-        then
+        if item.bufnr and item.bufnr == entry.bufnr and item.lnum == entry.lnum then
             found_idx = i
             break
         end
