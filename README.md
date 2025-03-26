@@ -230,3 +230,12 @@ vim.keymap.set('n', '<leader>wd', wiki.list_diary)
 vim.keymap.set('n', '<leader>ww', wiki.list_wiki)
 vim.keymap.set('n', '<leader>wn', wiki.new)
 ```
+
+## zoom
+Zoom in/out on the current window.
+
+### Usage
+```lua
+local zoom = require('myplugins.zoom')
+vim.keymap.set('n', '<leader>z', zoom.toggle)
+```
