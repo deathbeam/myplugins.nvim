@@ -1,6 +1,5 @@
 local M = {
     config = {
-        border = nil, -- Documentation border style
         entry_mapper = nil, -- Custom completion entry mapper
         debounce_delay = 100,
     },
@@ -91,8 +90,12 @@ local function text_changed(args)
     local prefix, cmp_start = unpack(vim.fn.matchstrpos(line:sub(1, col), [[\k*$]]))
 
     utils.debounce(state.entries.completion, M.config.debounce_delay, function()
-        local client = utils.get_client(args.buf, methods.textDocument_completion)
-        if client and vim.lsp.completion then
+        local clients = vim.lsp.get_clients({ bufnr = args.buf, method = methods.textDocument_completion })
+        clients = vim.tbl_filter(function(client)
+            return client and client.name ~= 'copilot'
+        end, clients)
+
+        if not vim.tbl_isempty(clients) and vim.lsp.completion then
             if vim.lsp.completion.trigger then
                 vim.lsp.completion.trigger()
                 return
@@ -126,36 +129,38 @@ local function complete_changed(args)
             return
         end
 
-        local client = utils.get_client(args.buf, methods.completionItem_resolve)
-        if not client then
-            return
-        end
+        local _, cancel = vim.lsp.buf_request(
+            args.buf,
+            methods.completionItem_resolve,
+            completion_item,
+            vim.schedule_wrap(function(err, item)
+                if err or not item then
+                    return
+                end
 
-        return utils.request(client, methods.completionItem_resolve, completion_item, function(result)
-            local docs = vim.tbl_get(result, 'documentation', 'value')
-            if not docs or #docs == 0 then
-                return
-            end
+                local docs = vim.tbl_get(item, 'documentation', 'value')
+                if not docs or #docs == 0 then
+                    return
+                end
 
-            local info = vim.fn.complete_info()
-            if not info.items or not info.selected or info.selected ~= selected then
-                return
-            end
+                local wininfo = vim.api.nvim__complete_set(selected, { info = docs })
+                if not wininfo.winid or not wininfo.bufnr then
+                    return
+                end
 
-            local wininfo = vim.api.nvim__complete_set(selected, { info = docs })
-            if not wininfo.winid or not wininfo.bufnr then
-                return
-            end
+                vim.api.nvim_win_set_config(wininfo.winid, {
+                    ---@diagnostic disable-next-line: assign-type-mismatch
+                    border = vim.o.winborder,
+                    focusable = false,
+                })
 
-            vim.api.nvim_win_set_config(wininfo.winid, {
-                border = M.config.border,
-                focusable = false,
-            })
+                vim.treesitter.start(wininfo.bufnr, 'markdown')
+                vim.wo[wininfo.winid].conceallevel = 3
+                vim.wo[wininfo.winid].concealcursor = 'niv'
+            end)
+        )
 
-            vim.treesitter.start(wininfo.bufnr, 'markdown')
-            vim.wo[wininfo.winid].conceallevel = 3
-            vim.wo[wininfo.winid].concealcursor = 'niv'
-        end, args.buf)
+        return cancel
     end)
 end
 
@@ -199,15 +204,20 @@ function M.setup(config)
     vim.api.nvim_create_autocmd('LspAttach', {
         group = group,
         desc = 'Attach completion events',
-        callback = function(event)
-            local client = utils.get_client(event.buf, methods.textDocument_completion)
-            if not client then
-                return
-            end
+        callback = function(args)
             if not vim.lsp.completion or not vim.lsp.completion.enable then
                 return
             end
-            vim.lsp.completion.enable(true, client.id, event.buf, {
+
+            local client = vim.lsp.get_client_by_id(args.data.client_id)
+            if not client then
+                return
+            end
+            if not client:supports_method(methods.textDocument_completion, args.buf) then
+                return
+            end
+
+            vim.lsp.completion.enable(true, client.id, args.buf, {
                 autotrigger = false,
                 convert = function(item)
                     local entry = {

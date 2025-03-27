@@ -1,8 +1,5 @@
 local M = {
     config = {
-        border = nil, -- Signature border style
-        width = 80, -- Max width of signature window
-        height = 25, -- Max height of signature window
         debounce_delay = 100,
     },
 }
@@ -26,10 +23,11 @@ function M.setup(config)
                 return
             end
 
-            local client = utils.get_client(args.buf, methods.textDocument_signatureHelp)
-            if not client then
+            local clients = vim.lsp.get_clients({ bufnr = args.buf, method = methods.textDocument_signatureHelp })
+            if vim.tbl_isempty(clients) then
                 return
             end
+            local client = clients[1]
 
             local before_line = line:sub(1, col)
             local has_trigger_char = vim.iter(client.server_capabilities.signatureHelpProvider.triggerCharacters or {})
@@ -46,9 +44,6 @@ function M.setup(config)
                 vim.lsp.buf.signature_help({
                     focusable = false,
                     close_events = { 'CursorMoved', 'CursorMovedI', 'BufLeave', 'BufWinLeave' },
-                    border = M.config.border,
-                    max_width = M.config.width,
-                    max_height = M.config.height,
                     anchor_bias = 'above',
                 })
             end)

@@ -7,12 +7,9 @@ A collection of plugins that were at some point sitting in my dotfiles.
 ```lua
 require('myplugins').setup {
     bigfile = {},
-    bufcomplete = {
-        border = 'single',
-    },
-    signature = {
-        border = 'single',
-    },
+    bufcomplete = {},
+    signature = {},
+    zoom = {}
     -- Etc etc, format is <plugin_name> = { <plugin_configuration> }
 }
 ```
@@ -59,10 +56,12 @@ end)
 ## bufcomplete
 LSP + treesitter autocompletion
 
+> [!WARNING]
+> Requires neovim 0.11.0+
+
 ### Default config
 ```lua
 {
-    border = nil, -- Documentation border style
     entry_mapper = nil, -- Custom completion entry mapper
     debounce_delay = 100,
 }
@@ -197,9 +196,6 @@ Automatically show function signature on cursor hover in insert mode.
 ### Default config
 ```lua
 {
-    border = nil, -- Signature border style
-    width = 80, -- Max width of signature window
-    height = 25, -- Max height of signature window
     debounce_delay = 100,
 }
 ```

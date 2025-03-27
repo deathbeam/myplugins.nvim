@@ -37,41 +37,4 @@ function M.stop(entry)
     end
 end
 
-function M.request(client, method, params, handler, bufnr)
-    local ok, cancel_id = client.request(method, params, function(err, result, ctx)
-        if err or not result then
-            return
-        end
-
-        vim.schedule(function()
-            if not vim.api.nvim_buf_is_valid(ctx.bufnr) or vim.fn.mode() ~= 'i' then
-                return
-            end
-
-            handler(result)
-        end)
-    end, bufnr)
-    if not ok then
-        return
-    end
-    return function()
-        client.cancel_request(cancel_id)
-    end
-end
-
-function M.get_client(bufnr, method)
-    local clients = vim.lsp.get_clients({ bufnr = bufnr, method = method })
-    if vim.tbl_isempty(clients) then
-        return
-    end
-
-    for _, client in ipairs(clients) do
-        if not string.find(client.name:lower(), 'copilot') then
-            return client
-        end
-    end
-
-    return nil
-end
-
 return M
