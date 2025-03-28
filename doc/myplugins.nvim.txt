@@ -11,6 +11,7 @@ Table of Contents                           *myplugins.nvim-table-of-contents*
   - cmdcomplete                                   |myplugins.nvim-cmdcomplete|
   - diagnostics                                   |myplugins.nvim-diagnostics|
   - difftool                                         |myplugins.nvim-difftool|
+  - httpyac                                           |myplugins.nvim-httpyac|
   - lspecho                                           |myplugins.nvim-lspecho|
   - rooter                                             |myplugins.nvim-rooter|
   - session                                           |myplugins.nvim-session|
@@ -178,6 +179,22 @@ Add this to your `gitconfig`:
     
     [difftool "nvim_difftool"]
         cmd = nvim -c \"DiffTool $LOCAL $REMOTE\"
+<
+
+
+HTTPYAC                                               *myplugins.nvim-httpyac*
+
+Simple plugin for running http files using <httpyac>
+
+
+USAGE ~
+
+>lua
+    local http = require('myplugins.httpyac')
+    vim.keymap.set('n', '<leader>ho', http.toggle)
+    vim.keymap.set('n', '<leader>hh', http.run)
+    vim.keymap.set('n', '<leader>hH', http.run_all)
+    vim.keymap.set('n', '<leader>he', http.select_env)
 <
 
 
