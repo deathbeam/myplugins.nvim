@@ -36,6 +36,7 @@ local function exec(file, line, env)
     local cmd = {
         'httpyac',
         file,
+        '--no-color',
     }
 
     if line then
