@@ -16,28 +16,6 @@ function M.setup()
         end,
     })
 
-    vim.api.nvim_create_autocmd('CursorHold', {
-        group = group,
-        desc = 'Show diagnostics',
-        callback = function()
-            if vim.api.nvim_get_mode().mode ~= 'n' then
-                return
-            end
-
-            for _, win in ipairs(vim.api.nvim_list_wins()) do
-                local config = vim.api.nvim_win_get_config(win)
-                if config.relative ~= '' and not config.hide then
-                    local buf = vim.api.nvim_win_get_buf(win)
-                    if buf and vim.api.nvim_buf_is_valid(buf) and vim.api.nvim_buf_is_loaded(buf) then
-                        return
-                    end
-                end
-            end
-
-            vim.diagnostic.open_float()
-        end,
-    })
-
     vim.api.nvim_create_autocmd({ 'DiagnosticChanged', 'CursorMoved' }, {
         group = group,
         callback = function(args)

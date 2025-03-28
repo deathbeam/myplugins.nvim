@@ -96,7 +96,7 @@ Command-line autocompletion
 > Requires neovim 0.11.0+
 
 ## diagnostics
-Automatically show diagnostic popup on cursor hover and disable `DiagnosticUnnecessary` highlighting for code under cursor.
+Automatically disable `DiagnosticUnnecessary` highlighting for code under cursor.
 
 ## difftool
 `DiffTool <left> <right>` command for integration with `git difftool` and `git difftool --dir-diff`.
