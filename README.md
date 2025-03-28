@@ -129,6 +129,18 @@ Add this to your `gitconfig`:
     cmd = nvim -c \"DiffTool $LOCAL $REMOTE\"
 ```
 
+## httpyac
+Simple plugin for running http files using [httpyac](https://httpyac.github.io/)
+
+### Usage
+```lua
+local http = require('myplugins.httpyac')
+vim.keymap.set('n', '<leader>ho', http.toggle)
+vim.keymap.set('n', '<leader>hh', http.run)
+vim.keymap.set('n', '<leader>hH', http.run_all)
+vim.keymap.set('n', '<leader>he', http.select_env)
+```
+
 ## lspecho
 Echo LSP progress to cmdline
 
