@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.3.0](https://github.com/deathbeam/myplugins.nvim/compare/v0.2.1...v0.3.0) (2025-03-28)
+
+
+### Features
+
+* add --no-color flag to httpyac command ([80cc2a7](https://github.com/deathbeam/myplugins.nvim/commit/80cc2a7fc5c452b673a948b12b07229dc8b26b7e))
+* **httpyac:** add plugin for running http files ([6fe5032](https://github.com/deathbeam/myplugins.nvim/commit/6fe50329ee3d2bd1dce0efd151d5002fea81258e))
+* remove cursorhold diagnostic float ([86d847b](https://github.com/deathbeam/myplugins.nvim/commit/86d847bcc820536781ed1288d2b4f5a179411dae))
+* **ui:** add window zoom toggle functionality ([05f2bbc](https://github.com/deathbeam/myplugins.nvim/commit/05f2bbc2d3377b05eccea03f5826814c53ab8b27))
+
 ## [0.2.1](https://github.com/deathbeam/myplugins.nvim/compare/v0.2.0...v0.2.1) (2025-03-18)
 
 
