@@ -44,4 +44,8 @@ hi def link XMLAttribute Identifier
 syntax match StatSeparator "^-\{3,}$"
 hi def link StatSeparator Delimiter
 
+" Request stats summary
+syntax match httpStatSummary "^\d\+ requests processed.*$"
+hi def link httpStatSummary Special
+
 let b:current_syntax = "http_stat"

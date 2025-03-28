@@ -13,6 +13,7 @@ local function ensure_buffer()
 
     local buf = vim.api.nvim_create_buf(false, true)
     vim.bo[buf].syntax = 'http_stat'
+    vim.bo[buf].modifiable = false
     M.http_buffer = buf
 end
 
@@ -26,9 +27,23 @@ local function set_status(status, col)
         return
     end
 
-    M.status_mark_id = vim.api.nvim_buf_set_extmark(M.http_buffer, M.ns_id, 0, 0, {
-        virt_text = { { ' ' .. status .. ' ', col } },
-        virt_text_pos = 'overlay',
+    -- Parse multiline status
+    local status_lines = vim.split(status, '\n')
+    local virt_lines = {}
+    for _, line in ipairs(status_lines) do
+        table.insert(virt_lines, { { ' ' .. line .. ' ', col } })
+    end
+
+    local line_count = vim.api.nvim_buf_line_count(M.http_buffer)
+
+    -- Create extmark with virtual lines at the top of the buffer
+    M.status_mark_id = vim.api.nvim_buf_set_extmark(M.http_buffer, M.ns_id, line_count - 1, 0, {
+        virt_lines = virt_lines,
+        virt_lines_above = true,
+        virt_lines_leftcol = false,
+        priority = 200,
+        right_gravity = false,
+        undo_restore = true,
     })
 end
 
@@ -51,7 +66,9 @@ local function exec(file, line, env)
 
     -- Open and clear the window
     M.open()
+    vim.bo[M.http_buffer].modifiable = true
     vim.api.nvim_buf_set_lines(M.http_buffer, 0, -1, false, {})
+    vim.bo[M.http_buffer].modifiable = false
 
     -- Set status
     set_status('PROCESSING', 'DiffText')
@@ -67,12 +84,14 @@ local function exec(file, line, env)
 
                 local lines = vim.split(data, '\n')
                 local line_count = vim.api.nvim_buf_line_count(M.http_buffer)
+                vim.bo[M.http_buffer].modifiable = true
                 vim.api.nvim_buf_set_lines(M.http_buffer, line_count, line_count, false, lines)
+                vim.bo[M.http_buffer].modifiable = false
             end),
         },
         vim.schedule_wrap(function(obj)
             if obj.code ~= 0 then
-                set_status('ERROR', 'DiffDelete')
+                set_status('ERROR - ' .. obj.stderr, 'DiffDelete')
             else
                 set_status('DONE', 'DiffAdd')
             end
