@@ -47,7 +47,7 @@ local function set_status(status, col)
     })
 end
 
-local function exec(file, line, env)
+local function exec(file, line)
     local cmd = {
         'httpyac',
         file,
@@ -59,9 +59,9 @@ local function exec(file, line, env)
         table.insert(cmd, line)
     end
 
-    if env then
+    if M.selected_env then
         table.insert(cmd, '-e')
-        table.insert(cmd, env)
+        table.insert(cmd, M.selected_env)
     end
 
     -- Open and clear the window
@@ -70,7 +70,6 @@ local function exec(file, line, env)
     vim.api.nvim_buf_set_lines(M.http_buffer, 0, -1, false, {})
     vim.bo[M.http_buffer].modifiable = false
 
-    -- Set status
     set_status('PROCESSING', 'DiffText')
 
     vim.system(
@@ -91,7 +90,7 @@ local function exec(file, line, env)
         },
         vim.schedule_wrap(function(obj)
             if obj.code ~= 0 then
-                set_status('ERROR - ' .. obj.stderr, 'DiffDelete')
+                set_status('ERROR', 'DiffDelete')
             else
                 set_status('DONE', 'DiffAdd')
             end
@@ -129,13 +128,13 @@ end
 
 function M.run_all()
     local file = vim.fn.expand('%:p')
-    exec(file, nil, M.selected_env)
+    exec(file, nil)
 end
 
 function M.run()
     local file = vim.fn.expand('%:p')
     local line = vim.fn.line('.')
-    exec(file, line, M.selected_env)
+    exec(file, line)
 end
 
 function M.select_env()
@@ -158,10 +157,7 @@ function M.select_env()
         return
     end
 
-    local envs = {}
-    for env_name, _ in pairs(env_data) do
-        table.insert(envs, env_name)
-    end
+    local envs = vim.tbl_keys(env_data)
     table.sort(envs)
 
     vim.ui.select(envs, {
@@ -169,7 +165,6 @@ function M.select_env()
     }, function(choice)
         if choice then
             M.selected_env = choice
-            vim.notify('Selected environment: ' .. choice, vim.log.levels.INFO)
         end
     end)
 end
