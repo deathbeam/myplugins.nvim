@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/deathbeam/myplugins.nvim/compare/v0.3.0...v0.4.0) (2025-03-29)
+
+
+### Features
+
+* improve http buffer display and error handling ([2ad781c](https://github.com/deathbeam/myplugins.nvim/commit/2ad781c63bf220eecaf901a6a3a5614c4f52b35c))
+
 ## [0.3.0](https://github.com/deathbeam/myplugins.nvim/compare/v0.2.1...v0.3.0) (2025-03-28)
 
 
