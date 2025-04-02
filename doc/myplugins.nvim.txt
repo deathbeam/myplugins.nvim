@@ -1,4 +1,4 @@
-*myplugins.nvim.txt*        For NVIM v0.10.0        Last change: 2025 March 29
+*myplugins.nvim.txt*        For NVIM v0.10.0        Last change: 2025 April 02
 
 ==============================================================================
 Table of Contents                           *myplugins.nvim-table-of-contents*
@@ -225,23 +225,35 @@ DEFAULT CONFIG ~
 >lua
     {
         dirs = {
+            -- version control markers
             '.git/',
             '_darcs/',
             '.hg/',
             '.bzr/',
             '.svn/',
+            -- exrc markers
+            '.nvim.lua',
+            '.nvimrc',
+            '.exrc',
+            -- generic root markers
             '.editorconfig',
-            '.venv/',
-            'node_modules/',
             'Makefile',
-            'CMakeLists.txt',
+            -- javascript
+            'node_modules/',
+            'package.json',
+            -- python
+            '.venv/',
+            'pyproject.toml',
             '.pylintrc',
             'requirements.txt',
             'setup.py',
-            'pyproject.toml',
-            'package.json',
+            -- c
+            'CMakeLists.txt',
+            -- rust
             'Cargo.toml',
+            -- go
             'go.mod',
+            -- java
             'mvnw',
             'gradlew',
         },
