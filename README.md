@@ -161,23 +161,35 @@ Automatically changes working directory to project root.
 ```lua
 {
     dirs = {
+        -- version control markers
         '.git/',
         '_darcs/',
         '.hg/',
         '.bzr/',
         '.svn/',
+        -- exrc markers
+        '.nvim.lua',
+        '.nvimrc',
+        '.exrc',
+        -- generic root markers
         '.editorconfig',
-        '.venv/',
-        'node_modules/',
         'Makefile',
-        'CMakeLists.txt',
+        -- javascript
+        'node_modules/',
+        'package.json',
+        -- python
+        '.venv/',
+        'pyproject.toml',
         '.pylintrc',
         'requirements.txt',
         'setup.py',
-        'pyproject.toml',
-        'package.json',
+        -- c
+        'CMakeLists.txt',
+        -- rust
         'Cargo.toml',
+        -- go
         'go.mod',
+        -- java
         'mvnw',
         'gradlew',
     },
