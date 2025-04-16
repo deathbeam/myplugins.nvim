@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.4.0](https://github.com/deathbeam/myplugins.nvim/compare/v0.3.0...v0.4.0) (2025-04-16)
+
+
+### Features
+
+* improve http buffer display and error handling ([2ad781c](https://github.com/deathbeam/myplugins.nvim/commit/2ad781c63bf220eecaf901a6a3a5614c4f52b35c))
+* **rooter:** add exrc markers ([45b3e48](https://github.com/deathbeam/myplugins.nvim/commit/45b3e48bbddc51d5c12818347b3c5082429d70c0))
+
+
+### Bug Fixes
+
+* add error handler to buffer completion callback ([9726738](https://github.com/deathbeam/myplugins.nvim/commit/9726738c89dcf303d3dd6e692a194069ceca5ad7))
+
 ## [0.3.0](https://github.com/deathbeam/myplugins.nvim/compare/v0.2.1...v0.3.0) (2025-03-28)
 
 
