@@ -158,7 +158,7 @@ local function complete_changed(args)
                 vim.wo[wininfo.winid].conceallevel = 3
                 vim.wo[wininfo.winid].concealcursor = 'niv'
             end),
-            function () end
+            function() end
         )
 
         return cancel
