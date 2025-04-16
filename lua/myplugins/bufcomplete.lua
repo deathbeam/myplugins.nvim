@@ -157,7 +157,8 @@ local function complete_changed(args)
                 vim.treesitter.start(wininfo.bufnr, 'markdown')
                 vim.wo[wininfo.winid].conceallevel = 3
                 vim.wo[wininfo.winid].concealcursor = 'niv'
-            end)
+            end),
+            function () end
         )
 
         return cancel
