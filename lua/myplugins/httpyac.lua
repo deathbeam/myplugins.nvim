@@ -48,6 +48,7 @@ local function set_status(status, col)
 end
 
 local function exec(file, line)
+    local cwd = vim.fn.fnamemodify(file, ':h')
     local cmd = {
         'httpyac',
         file,
@@ -75,6 +76,7 @@ local function exec(file, line)
     vim.system(
         cmd,
         {
+            cwd = cwd,
             text = true,
             stdout = vim.schedule_wrap(function(_, data)
                 if not data then

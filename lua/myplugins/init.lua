@@ -11,6 +11,7 @@ function M.setup(config)
             end
         else
             vim.notify('Plugin ' .. key .. ' not found or does not have a setup function', vim.log.levels.WARN)
+            vim.notify('Error: ' .. tostring(plugin), vim.log.levels.WARN)
         end
     end
 end
