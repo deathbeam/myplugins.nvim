@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/deathbeam/myplugins.nvim/compare/v0.4.0...v0.4.1) (2025-08-07)
+
+
+### Bug Fixes
+
+* **plugin:** improve error reporting and httpyac exec cwd ([f1e4b3e](https://github.com/deathbeam/myplugins.nvim/commit/f1e4b3e3ac1a00cc8bc56753874d0ae5cbdf5462))
+
 ## [0.4.0](https://github.com/deathbeam/myplugins.nvim/compare/v0.3.0...v0.4.0) (2025-04-16)
 
 
