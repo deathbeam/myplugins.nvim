@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/deathbeam/myplugins.nvim/compare/v0.4.1...v0.5.0) (2025-08-09)
+
+
+### Features
+
+* **lsp:** add lspdocs and rename signature to lspsignature ([4f90e09](https://github.com/deathbeam/myplugins.nvim/commit/4f90e09207e1118dac33c1e1dd8062c2f056c0a3))
+
 ## [0.4.1](https://github.com/deathbeam/myplugins.nvim/compare/v0.4.0...v0.4.1) (2025-08-07)
 
 
