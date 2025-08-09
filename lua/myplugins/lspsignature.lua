@@ -10,7 +10,7 @@ local methods = vim.lsp.protocol.Methods
 function M.setup(config)
     M.config = vim.tbl_deep_extend('force', M.config, config or {})
 
-    local group = vim.api.nvim_create_augroup('myplugins-signature', { clear = true })
+    local group = vim.api.nvim_create_augroup('myplugins-lspsignature', { clear = true })
     local entry = utils.entry()
 
     vim.api.nvim_create_autocmd({ 'CursorMovedI', 'InsertEnter' }, {

@@ -1,4 +1,4 @@
-# myplugins.nvim
+lsp# myplugins.nvim
 
 A collection of plugins that were at some point sitting in my dotfiles.
 
@@ -8,7 +8,8 @@ A collection of plugins that were at some point sitting in my dotfiles.
 require('myplugins').setup {
     bigfile = {},
     bufcomplete = {},
-    signature = {},
+    lspecho = {},
+    lspsignature = {},
     zoom = {}
     -- Etc etc, format is <plugin_name> = { <plugin_configuration> }
 }
@@ -141,6 +142,16 @@ vim.keymap.set('n', '<leader>hH', http.run_all)
 vim.keymap.set('n', '<leader>he', http.select_env)
 ```
 
+## lspdocs
+Automatically show LSP documentation on completion item hover.
+
+### Default config
+```lua
+{
+    debounce_delay = 100,
+}
+```
+
 ## lspecho
 Echo LSP progress to cmdline
 
@@ -151,6 +162,16 @@ Echo LSP progress to cmdline
     decay = 3000, -- Message decay time in milliseconds
     interval = 100, -- Minimum time between echo updates in milliseconds
     attach_log = false, -- Attach to logMessage and showMessage
+}
+```
+
+## lspsignature
+Automatically show LSP function signature on cursor hover in insert mode.
+
+### Default config
+```lua
+{
+    debounce_delay = 100,
 }
 ```
 
@@ -211,16 +232,6 @@ Automatically saves and restores session in predefined folders (default ~/git)
     extra = {
         quickfix = true, -- Save/load also quickfix lists
     }
-}
-```
-
-## signature
-Automatically show function signature on cursor hover in insert mode.
-
-### Default config
-```lua
-{
-    debounce_delay = 100,
 }
 ```
 

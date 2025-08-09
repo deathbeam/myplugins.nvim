@@ -9,10 +9,7 @@ local utils = require('myplugins.utils')
 local methods = vim.lsp.protocol.Methods
 
 local state = {
-    entries = {
-        completion = nil,
-        info = nil,
-    },
+    entry = nil,
 }
 
 local function complete(prefix, cmp_start, items)
@@ -89,7 +86,7 @@ local function text_changed(args)
 
     local prefix, cmp_start = unpack(vim.fn.matchstrpos(line:sub(1, col), [[\k*$]]))
 
-    utils.debounce(state.entries.completion, M.config.debounce_delay, function()
+    utils.debounce(state.entry, M.config.debounce_delay, function()
         local clients = vim.lsp.get_clients({ bufnr = args.buf, method = methods.textDocument_completion })
         clients = vim.tbl_filter(function(client)
             return client and client.name ~= 'copilot'
@@ -107,61 +104,6 @@ local function text_changed(args)
         end
 
         complete_treesitter(args.buf, prefix, cmp_start)
-    end)
-end
-
-local function complete_changed(args)
-    if not string.find(vim.o.completeopt, 'popup') then
-        return
-    end
-
-    if not vim.v.event or not vim.v.event.completed_item then
-        return
-    end
-
-    local cur_item = vim.v.event.completed_item
-    local cur_info = vim.fn.complete_info()
-    local selected = cur_info.selected
-
-    utils.debounce(state.entries.info, M.config.debounce_delay, function()
-        local completion_item = vim.tbl_get(cur_item or {}, 'user_data', 'nvim', 'lsp', 'completion_item')
-        if not completion_item then
-            return
-        end
-
-        local _, cancel = vim.lsp.buf_request(
-            args.buf,
-            methods.completionItem_resolve,
-            completion_item,
-            vim.schedule_wrap(function(err, item)
-                if err or not item then
-                    return
-                end
-
-                local docs = vim.tbl_get(item, 'documentation', 'value')
-                if not docs or #docs == 0 then
-                    return
-                end
-
-                local wininfo = vim.api.nvim__complete_set(selected, { info = docs })
-                if not wininfo.winid or not wininfo.bufnr then
-                    return
-                end
-
-                vim.api.nvim_win_set_config(wininfo.winid, {
-                    ---@diagnostic disable-next-line: assign-type-mismatch
-                    border = vim.o.winborder,
-                    focusable = false,
-                })
-
-                vim.treesitter.start(wininfo.bufnr, 'markdown')
-                vim.wo[wininfo.winid].conceallevel = 3
-                vim.wo[wininfo.winid].concealcursor = 'niv'
-            end),
-            function() end
-        )
-
-        return cancel
     end)
 end
 
@@ -185,8 +127,7 @@ end
 
 function M.setup(config)
     M.config = vim.tbl_deep_extend('force', M.config, config or {})
-    state.entries.completion = utils.entry()
-    state.entries.info = utils.entry()
+    state.entry = utils.empty()
 
     local group = vim.api.nvim_create_augroup('myplugins-bufcomplete', { clear = true })
 
@@ -194,12 +135,6 @@ function M.setup(config)
         group = group,
         desc = 'Auto show completion',
         callback = text_changed,
-    })
-
-    vim.api.nvim_create_autocmd('CompleteChanged', {
-        group = group,
-        desc = 'Auto show LSP documentation',
-        callback = complete_changed,
     })
 
     vim.api.nvim_create_autocmd('LspAttach', {
