@@ -1,9 +1,8 @@
-*myplugins.nvim.txt*        For NVIM v0.10.0       Last change: 2025 August 08
+*myplugins.nvim.txt*        For NVIM v0.10.0       Last change: 2025 August 09
 
 ==============================================================================
 Table of Contents                           *myplugins.nvim-table-of-contents*
 
-1. myplugins.nvim                              |myplugins.nvim-myplugins.nvim|
   - Usage                                               |myplugins.nvim-usage|
   - bigfile                                           |myplugins.nvim-bigfile|
   - bookmarks                                       |myplugins.nvim-bookmarks|
@@ -12,16 +11,15 @@ Table of Contents                           *myplugins.nvim-table-of-contents*
   - diagnostics                                   |myplugins.nvim-diagnostics|
   - difftool                                         |myplugins.nvim-difftool|
   - httpyac                                           |myplugins.nvim-httpyac|
+  - lspdocs                                           |myplugins.nvim-lspdocs|
   - lspecho                                           |myplugins.nvim-lspecho|
+  - lspsignature                                 |myplugins.nvim-lspsignature|
   - rooter                                             |myplugins.nvim-rooter|
   - session                                           |myplugins.nvim-session|
-  - signature                                       |myplugins.nvim-signature|
   - undotree                                         |myplugins.nvim-undotree|
   - wiki                                                 |myplugins.nvim-wiki|
   - zoom                                                 |myplugins.nvim-zoom|
-
-==============================================================================
-1. myplugins.nvim                              *myplugins.nvim-myplugins.nvim*
+lsp# myplugins.nvim
 
 A collection of plugins that were at some point sitting in my dotfiles.
 
@@ -32,7 +30,8 @@ USAGE                                                   *myplugins.nvim-usage*
     require('myplugins').setup {
         bigfile = {},
         bufcomplete = {},
-        signature = {},
+        lspecho = {},
+        lspsignature = {},
         zoom = {}
         -- Etc etc, format is <plugin_name> = { <plugin_configuration> }
     }
@@ -198,6 +197,20 @@ USAGE ~
 <
 
 
+LSPDOCS                                               *myplugins.nvim-lspdocs*
+
+Automatically show LSP documentation on completion item hover.
+
+
+DEFAULT CONFIG ~
+
+>lua
+    {
+        debounce_delay = 100,
+    }
+<
+
+
 LSPECHO                                               *myplugins.nvim-lspecho*
 
 Echo LSP progress to cmdline
@@ -211,6 +224,20 @@ DEFAULT CONFIG ~
         decay = 3000, -- Message decay time in milliseconds
         interval = 100, -- Minimum time between echo updates in milliseconds
         attach_log = false, -- Attach to logMessage and showMessage
+    }
+<
+
+
+LSPSIGNATURE                                     *myplugins.nvim-lspsignature*
+
+Automatically show LSP function signature on cursor hover in insert mode.
+
+
+DEFAULT CONFIG ~
+
+>lua
+    {
+        debounce_delay = 100,
     }
 <
 
@@ -279,20 +306,6 @@ DEFAULT CONFIG ~
         extra = {
             quickfix = true, -- Save/load also quickfix lists
         }
-    }
-<
-
-
-SIGNATURE                                           *myplugins.nvim-signature*
-
-Automatically show function signature on cursor hover in insert mode.
-
-
-DEFAULT CONFIG ~
-
->lua
-    {
-        debounce_delay = 100,
     }
 <
 
