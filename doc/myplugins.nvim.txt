@@ -1,4 +1,4 @@
-*myplugins.nvim.txt*        For NVIM v0.10.0       Last change: 2025 August 09
+*myplugins.nvim.txt*        For NVIM v0.10.0       Last change: 2025 August 16
 
 ==============================================================================
 Table of Contents                           *myplugins.nvim-table-of-contents*
@@ -54,37 +54,23 @@ DEFAULT CONFIG ~
 
 BOOKMARKS                                           *myplugins.nvim-bookmarks*
 
-Bookmark files and lines using quickfix list.
-
-
-DEFAULT CONFIG ~
-
->lua
-    {
-        name = 'Bookmarks', -- Name of the quickfix list
-    }
-<
+Bookmark files using native marks.
 
 
 USAGE ~
 
-Best used with `session` plugin with `extra.quickfix = true` to automatically
-save and load quickfix lists (including bookmarks).
-
 >lua
     local bookmarks = require('myplugins.bookmarks')
-    vim.keymap.set('n', '<leader>jj', bookmarks.toggle_file)
-    vim.keymap.set('n', '<leader>jl', bookmarks.toggle_line)
-    vim.keymap.set('n', '<leader>jk', bookmarks.load)
-    vim.keymap.set('n', '<leader>jx', bookmarks.clear)
-    vim.keymap.set('n', ']j', function()
-        bookmarks.load()
-        vim.cmd('silent! cnext')
-    end)
-    vim.keymap.set('n', '[j', function()
-        bookmarks.load()
-        vim.cmd('silent! cprevious')
-    end)
+    vim.keymap.set('n', '<leader>mm', bookmarks.select, { desc = 'Bookmarks Select' })
+    vim.keymap.set('n', '<leader>mq', bookmarks.quickfix, { desc = 'Bookmarks Quickfix' })
+    vim.keymap.set('n', '<leader>md', bookmarks.delete_buffer, { desc = 'Bookmarks Delete Buffer' })
+    vim.keymap.set('n', '<leader>mD', bookmarks.delete_all, { desc = 'Bookmarks Delete All' })
+    vim.keymap.set('n', "'", function()
+        bookmarks.jump_to_mark(vim.fn.getcharstr())
+    end, { desc = 'Bookmarks Jump to Mark' })
+    vim.keymap.set('n', 'm', function()
+        bookmarks.toggle_mark(vim.fn.getcharstr())
+    end, { desc = 'Bookmarks Toggle Mark' })
 <
 
 
