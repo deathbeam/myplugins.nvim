@@ -1,91 +1,121 @@
-local M = {
-    config = {
-        name = 'Bookmarks', -- Name of the quickfix list
-    },
-}
+local M = {}
 
-local function ensure_quickfix_list()
-    local max_nr = vim.fn.getqflist({ nr = '$' }).nr
-
-    for i = 1, max_nr do
-        local qf = vim.fn.getqflist({ nr = i, all = 1 })
-        if qf.title == M.config.name then
-            return qf.id
-        end
+local function mark_char(idx)
+    local idxn = tonumber(idx)
+    if idxn and idxn >= 1 and idxn <= 9 then
+        return string.char(64 + idxn) -- 1->A, 2->B, ...
     end
-
-    vim.fn.setqflist({}, ' ', { title = M.config.name })
-    return vim.fn.getqflist({ id = 0 }).id
+    return idx
 end
 
-local function toggle_quickfix_item(entry)
-    local id = ensure_quickfix_list()
+local function get_marks()
+    local out = {}
 
-    local qf_list = vim.fn.getqflist({ id = id, items = 1 }).items
-    local found_idx = nil
-    for i, item in ipairs(qf_list) do
-        if item.bufnr and item.bufnr == entry.bufnr and item.lnum == entry.lnum then
-            found_idx = i
-            break
+    for i = 1, 9 do
+        local char = mark_char(i)
+        local mark_row, mark_col, mark_bufnr, mark_file = unpack(vim.api.nvim_get_mark(char, {}))
+        if mark_bufnr ~= 0 then
+            mark_file = vim.api.nvim_buf_get_name(mark_bufnr)
+        end
+
+        if mark_row ~= 0 then
+            table.insert(out, {
+                idx = i,
+                char = char,
+                bufnr = mark_bufnr,
+                lnum = mark_row,
+                col = mark_col,
+                filename = mark_file or '',
+                text = string.format(
+                    '%d: %s:%d',
+                    i,
+                    mark_file ~= '' and vim.fn.fnamemodify(mark_file, ':t') or '[No Name]',
+                    mark_row
+                ),
+            })
         end
     end
 
-    if found_idx then
-        table.remove(qf_list, found_idx)
-        vim.fn.setqflist({}, 'r', {
-            id = id,
-            items = qf_list,
-            title = M.config.name,
-        })
+    return out
+end
+
+function M.toggle_mark(idx)
+    local numidx = tonumber(idx)
+    if not numidx or numidx < 1 or numidx > 9 then
         return
     end
 
-    vim.fn.setqflist({}, 'a', {
-        id = id,
-        title = M.config.name,
-        items = { entry },
-    })
-end
+    local char = mark_char(idx)
+    local mark_row, mark_col, mark_bufnr = unpack(vim.api.nvim_get_mark(char, {}))
+    local current_bufnr = vim.api.nvim_get_current_buf()
+    local current_row, current_col = unpack(vim.api.nvim_win_get_cursor(0))
 
-function M.toggle_file()
-    local current_buf = vim.api.nvim_get_current_buf()
-    toggle_quickfix_item({
-        bufnr = current_buf,
-        lnum = 1,
-        col = 1,
-    })
-end
-
-function M.toggle_line()
-    local current_buf = vim.api.nvim_get_current_buf()
-    local current_line_num = vim.fn.line('.')
-    local current_line = vim.fn.getline('.')
-    toggle_quickfix_item({
-        bufnr = current_buf,
-        lnum = current_line_num,
-        col = 1,
-        text = current_line,
-    })
-end
-
-function M.load()
-    local quickfix_id = ensure_quickfix_list()
-    local cur_id = vim.fn.getqflist({ id = 0 }).id
-    local rel_change = cur_id - quickfix_id
-    if rel_change > 0 then
-        vim.cmd('colder ' .. rel_change)
-    elseif rel_change < 0 then
-        vim.cmd('cnewer ' .. -rel_change)
+    if mark_row ~= 0 and mark_row == current_row and mark_bufnr == current_bufnr then
+        vim.api.nvim_del_mark(char)
+    else
+        vim.cmd('mark ' .. char)
     end
 end
 
-function M.clear()
-    local quickfix_id = ensure_quickfix_list()
-    vim.fn.setqflist({}, ' ', { id = quickfix_id })
+function M.jump_to_mark(idx)
+    local char = mark_char(idx)
+    vim.fn.feedkeys("'" .. char, 'n')
 end
 
-function M.setup(config)
-    M.config = vim.tbl_deep_extend('force', M.config, config or {})
+function M.delete_buffer()
+    for i = 1, 9 do
+        local char = mark_char(i)
+        local mark_row, mark_col, mark_bufnr = unpack(vim.api.nvim_get_mark(char, {}))
+        local current_bufnr = vim.api.nvim_get_current_buf()
+        if mark_row ~= 0 and mark_bufnr == current_bufnr then
+            vim.api.nvim_del_mark(char)
+        end
+    end
+end
+
+function M.delete_all()
+    for i = 1, 9 do
+        local char = mark_char(i)
+        vim.api.nvim_del_mark(char)
+    end
+end
+
+function M.select()
+    local items = get_marks()
+
+    if #items == 0 then
+        return
+    end
+
+    vim.ui.select(items, {
+        prompt = 'Select bookmark:',
+        format_item = function(item)
+            return item.text
+        end,
+    }, function(choice)
+        if choice then
+            M.jump_to_mark(choice.idx)
+        end
+    end)
+end
+
+function M.quickfix()
+    local qfl = vim.tbl_map(function(item)
+        return {
+            bufnr = item.bufnr,
+            lnum = item.lnum,
+            col = item.col,
+            text = item.text,
+            filename = item.filename,
+        }
+    end, get_marks())
+
+    if #qfl == 0 then
+        return
+    end
+
+    vim.fn.setqflist(qfl, 'r')
+    vim.cmd('copen')
 end
 
 return M
