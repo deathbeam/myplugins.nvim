@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/deathbeam/myplugins.nvim/compare/v0.5.0...v0.6.0) (2025-08-16)
+
+
+### Features
+
+* **bookmarks:** use native marks for bookmarks ([#8](https://github.com/deathbeam/myplugins.nvim/issues/8)) ([d73b228](https://github.com/deathbeam/myplugins.nvim/commit/d73b228ddc7fa4b6db709070773f2ea48d98bf0d))
+
 ## [0.5.0](https://github.com/deathbeam/myplugins.nvim/compare/v0.4.1...v0.5.0) (2025-08-09)
 
 
