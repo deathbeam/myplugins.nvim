@@ -247,18 +247,6 @@ function M.diff(left, right)
         return
     end
 
-    if vim.fn.isdirectory(left) == 1 and vim.fn.isdirectory(right) == 1 then
-        diff_directories(left, right)
-    elseif vim.fn.filereadable(left) == 1 and vim.fn.filereadable(right) == 1 then
-        diff_files(left, right)
-    else
-        vim.notify('Both arguments must be files or directories', vim.log.levels.ERROR)
-    end
-end
-
-function M.setup(config)
-    M.config = vim.tbl_deep_extend('force', M.config, config or {})
-
     local group = vim.api.nvim_create_augroup('myplugins-difftool', { clear = true })
     local ns_id = vim.api.nvim_create_namespace('difftool_qf')
 
@@ -285,9 +273,8 @@ function M.setup(config)
         group = group,
         pattern = '*',
         callback = function(args)
-            local qf_info = vim.fn.getqflist({ idx = 0 })
-            local qf_list = vim.fn.getqflist()
-            local entry = qf_list[qf_info.idx]
+            local qf_info = vim.fn.getqflist({ idx = 0, items = 1 })
+            local entry = qf_info.items[1]
 
             -- Check if the entry is a diff entry
             if not entry or not entry.user_data or not entry.user_data.diff or args.buf ~= entry.bufnr then
@@ -299,6 +286,18 @@ function M.setup(config)
             end)
         end,
     })
+
+    if vim.fn.isdirectory(left) == 1 and vim.fn.isdirectory(right) == 1 then
+        diff_directories(left, right)
+    elseif vim.fn.filereadable(left) == 1 and vim.fn.filereadable(right) == 1 then
+        diff_files(left, right)
+    else
+        vim.notify('Both arguments must be files or directories', vim.log.levels.ERROR)
+    end
+end
+
+function M.setup(config)
+    M.config = vim.tbl_deep_extend('force', M.config, config or {})
 
     vim.api.nvim_create_user_command('DiffTool', function(opts)
         if #opts.fargs >= 2 then
