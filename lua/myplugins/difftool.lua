@@ -280,7 +280,7 @@ function M.diff(left, right)
             end
 
             -- Check if the entry is a diff entry
-            local entry = qf_info.items[1]
+            local entry = qf_info.items[qf_info.idx]
             if not entry or not entry.user_data or not entry.user_data.diff or args.buf ~= entry.bufnr then
                 return
             end
