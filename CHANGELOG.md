@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.6.0](https://github.com/deathbeam/myplugins.nvim/compare/v0.5.0...v0.6.0) (2025-08-24)
+
+
+### Features
+
+* **bookmarks:** use native marks for bookmarks ([#8](https://github.com/deathbeam/myplugins.nvim/issues/8)) ([d73b228](https://github.com/deathbeam/myplugins.nvim/commit/d73b228ddc7fa4b6db709070773f2ea48d98bf0d))
+* **diftool:** improve performance and delay initialization ([e697061](https://github.com/deathbeam/myplugins.nvim/commit/e697061afd639880bcaeb68f3048ef522798ad93))
+
+
+### Bug Fixes
+
+* **difftool:** improve performance slightly more ([#11](https://github.com/deathbeam/myplugins.nvim/issues/11)) ([cc5c06a](https://github.com/deathbeam/myplugins.nvim/commit/cc5c06aabe90f3f02d3b21db783515421b253e49))
+* **difftool:** use current quickfix index for diff entry ([bf8a96c](https://github.com/deathbeam/myplugins.nvim/commit/bf8a96c92c9744f7635e60c3ff7e001157fc4f75))
+
 ## [0.5.0](https://github.com/deathbeam/myplugins.nvim/compare/v0.4.1...v0.5.0) (2025-08-09)
 
 
