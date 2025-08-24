@@ -1,7 +1,7 @@
 local M = {
     config = {
         rename = {
-            detect = true, -- whether to detect renames, can be slow on large directories so disable if needed
+            detect = false, -- whether to detect renames, can be slow on large directories
             similarity = 0.5, -- minimum similarity for rename detection
             max_size = 1024 * 1024, -- maximum file size for rename detection
         },
@@ -309,7 +309,7 @@ function M.setup(config)
         else
             vim.notify('Usage: DiffTool <left> <right>', vim.log.levels.ERROR)
         end
-    end, { nargs = '*', force = true })
+    end, { nargs = '*', force = true, complete = 'file' })
 end
 
 return M
