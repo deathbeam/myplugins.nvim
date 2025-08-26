@@ -131,6 +131,10 @@ function M.setup(config)
 
     local group = vim.api.nvim_create_augroup('myplugins-bufcomplete', { clear = true })
 
+    vim.lsp.config('*', {
+        capabilities = M.capabilities(),
+    })
+
     vim.api.nvim_create_autocmd('TextChangedI', {
         group = group,
         desc = 'Auto show completion',

@@ -65,21 +65,6 @@ For best completion experience:
 vim.o.completeopt = 'menuone,noselect,noinsert,popup'
 ```
 
-And you also ideally want to set the capabilities so Neovim will fetch documentation when resolving completion items:
-
-```lua
--- Here we grab default Neovim capabilities and extend them with ones we want on top
-local capabilities = vim.tbl_deep_extend('force', 
-    vim.lsp.protocol.make_client_capabilities(), 
-    require('autocomplete.capabilities')
-)
-
--- Now set capabilities on your LSP servers
-require('lspconfig')['<YOUR_LSP_SERVER>'].setup {
-    capabilities = capabilities
-}
-```
-
 ## cmdcomplete
 Command-line autocompletion
 
