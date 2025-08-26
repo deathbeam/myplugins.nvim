@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/deathbeam/myplugins.nvim/compare/v0.6.0...v0.7.0) (2025-08-26)
+
+
+### Features
+
+* **difftool:** disable rename detection by default ([#12](https://github.com/deathbeam/myplugins.nvim/issues/12)) ([9723854](https://github.com/deathbeam/myplugins.nvim/commit/9723854e57b39c7ca8fd9420d643dd2561380739))
+
 ## [0.6.0](https://github.com/deathbeam/myplugins.nvim/compare/v0.5.0...v0.6.0) (2025-08-24)
 
 
