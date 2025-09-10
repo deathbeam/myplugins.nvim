@@ -84,7 +84,7 @@ local function lsp_progress(err, progress, ctx)
     local client = vim.lsp.get_client_by_id(ctx.client_id)
     local client_name = client and client.name or ''
     local token = progress.token
-    local value = progress.value
+    local value = progress.value or progress
 
     if value.kind == 'begin' then
         series[token] = {
