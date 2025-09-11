@@ -1,4 +1,4 @@
-lsp# myplugins.nvim
+# myplugins.nvim
 
 A collection of plugins that were at some point sitting in my dotfiles.
 
