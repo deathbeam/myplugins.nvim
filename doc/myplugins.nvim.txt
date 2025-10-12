@@ -1,4 +1,4 @@
-*myplugins.nvim.txt*      For NVIM v0.10.0      Last change: 2025 September 11
+*myplugins.nvim.txt*       For NVIM v0.10.0       Last change: 2025 October 12
 
 ==============================================================================
 Table of Contents                           *myplugins.nvim-table-of-contents*
@@ -10,7 +10,6 @@ Table of Contents                           *myplugins.nvim-table-of-contents*
   - bufcomplete                                   |myplugins.nvim-bufcomplete|
   - cmdcomplete                                   |myplugins.nvim-cmdcomplete|
   - diagnostics                                   |myplugins.nvim-diagnostics|
-  - difftool                                         |myplugins.nvim-difftool|
   - httpyac                                           |myplugins.nvim-httpyac|
   - lspdocs                                           |myplugins.nvim-lspdocs|
   - lspecho                                           |myplugins.nvim-lspecho|
@@ -114,44 +113,6 @@ DIAGNOSTICS                                       *myplugins.nvim-diagnostics*
 
 Automatically disable `DiagnosticUnnecessary` highlighting for code under
 cursor.
-
-
-DIFFTOOL                                             *myplugins.nvim-difftool*
-
-`DiffTool <left> <right>` command for integration with `git difftool` and `git
-difftool --dir-diff`.
-
-
-DEFAULT CONFIG ~
-
->lua
-    {
-        rename = {
-            detect = true, -- whether to detect renames, can be slow on large directories so disable if needed
-            similarity = 0.5, -- minimum similarity for rename detection
-            max_size = 1024 * 1024, -- maximum file size for rename detection
-        },
-        highlight = {
-            A = 'DiffAdd', -- Added
-            D = 'DiffDelete', -- Deleted
-            M = 'DiffText', -- Modified
-            R = 'DiffChange', -- Renamed
-        },
-    }
-<
-
-
-USAGE ~
-
-Add this to your `gitconfig`:
-
->ini
-    [diff]
-        tool = nvim_difftool
-    
-    [difftool "nvim_difftool"]
-        cmd = nvim -c \"DiffTool $LOCAL $REMOTE\"
-<
 
 
 HTTPYAC                                               *myplugins.nvim-httpyac*
