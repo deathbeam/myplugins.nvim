@@ -16,7 +16,6 @@ Table of Contents                           *myplugins.nvim-table-of-contents*
   - lspsignature                                 |myplugins.nvim-lspsignature|
   - rooter                                             |myplugins.nvim-rooter|
   - session                                           |myplugins.nvim-session|
-  - undotree                                         |myplugins.nvim-undotree|
   - wiki                                                 |myplugins.nvim-wiki|
   - zoom                                                 |myplugins.nvim-zoom|
 
@@ -241,18 +240,6 @@ DEFAULT CONFIG ~
             quickfix = true, -- Save/load also quickfix lists
         }
     }
-<
-
-
-UNDOTREE                                             *myplugins.nvim-undotree*
-
-Undo tree visualization for `fzf-lua`.
-
-
-USAGE ~
-
->lua
-    vim.keymap.set('n', '<leader>fu', require('myplugins.undotree').show)
 <
 
 
