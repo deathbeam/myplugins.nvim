@@ -179,14 +179,6 @@ Automatically saves and restores session in predefined folders (default ~/git)
 }
 ```
 
-## undotree
-Undo tree visualization for `fzf-lua`.
-
-### Usage
-```lua
-vim.keymap.set('n', '<leader>fu', require('myplugins.undotree').show)
-```
-
 ## wiki
 Simple wiki/note-taking functionality using `fzf-lua`.
 
