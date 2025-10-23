@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/deathbeam/myplugins.nvim/compare/v0.7.0...v0.8.0) (2025-10-23)
+
+
+### Features
+
+* remove bufcomplete and cmdcomplete plugins ([ad70500](https://github.com/deathbeam/myplugins.nvim/commit/ad705005a31a39b97bf329a2f25a0453a59123f7))
+
 ## [0.7.0](https://github.com/deathbeam/myplugins.nvim/compare/v0.6.0...v0.7.0) (2025-08-26)
 
 
