@@ -7,7 +7,6 @@ A collection of plugins that were at some point sitting in my dotfiles.
 ```lua
 require('myplugins').setup {
     bigfile = {},
-    bufcomplete = {},
     lspecho = {},
     lspsignature = {},
     zoom = {}
@@ -43,33 +42,6 @@ vim.keymap.set('n', 'm', function()
     bookmarks.toggle_mark(vim.fn.getcharstr())
 end, { desc = 'Bookmarks Toggle Mark' })
 ```
-
-## bufcomplete
-LSP + treesitter autocompletion
-
-> [!WARNING]
-> Requires neovim 0.11.0+
-
-### Default config
-```lua
-{
-    entry_mapper = nil, -- Custom completion entry mapper
-    debounce_delay = 100,
-}
-```
-
-### Usage
-For best completion experience:
-
-```lua
-vim.o.completeopt = 'menuone,noselect,noinsert,popup'
-```
-
-## cmdcomplete
-Command-line autocompletion
-
-> [!WARNING]
-> Requires neovim 0.11.0+
 
 ## diagnostics
 Automatically disable `DiagnosticUnnecessary` highlighting for code under cursor.
