@@ -1,4 +1,4 @@
-*myplugins.nvim.txt*       For NVIM v0.10.0       Last change: 2025 October 12
+*myplugins.nvim.txt*       For NVIM v0.10.0       Last change: 2025 October 23
 
 ==============================================================================
 Table of Contents                           *myplugins.nvim-table-of-contents*
@@ -7,8 +7,6 @@ Table of Contents                           *myplugins.nvim-table-of-contents*
   - Usage                                               |myplugins.nvim-usage|
   - bigfile                                           |myplugins.nvim-bigfile|
   - bookmarks                                       |myplugins.nvim-bookmarks|
-  - bufcomplete                                   |myplugins.nvim-bufcomplete|
-  - cmdcomplete                                   |myplugins.nvim-cmdcomplete|
   - diagnostics                                   |myplugins.nvim-diagnostics|
   - httpyac                                           |myplugins.nvim-httpyac|
   - lspdocs                                           |myplugins.nvim-lspdocs|
@@ -30,7 +28,6 @@ USAGE                                                   *myplugins.nvim-usage*
 >lua
     require('myplugins').setup {
         bigfile = {},
-        bufcomplete = {},
         lspecho = {},
         lspsignature = {},
         zoom = {}
@@ -74,39 +71,6 @@ USAGE ~
     end, { desc = 'Bookmarks Toggle Mark' })
 <
 
-
-BUFCOMPLETE                                       *myplugins.nvim-bufcomplete*
-
-LSP + treesitter autocompletion
-
-
-  [!WARNING] Requires neovim 0.11.0+
-
-DEFAULT CONFIG ~
-
->lua
-    {
-        entry_mapper = nil, -- Custom completion entry mapper
-        debounce_delay = 100,
-    }
-<
-
-
-USAGE ~
-
-For best completion experience:
-
->lua
-    vim.o.completeopt = 'menuone,noselect,noinsert,popup'
-<
-
-
-CMDCOMPLETE                                       *myplugins.nvim-cmdcomplete*
-
-Command-line autocompletion
-
-
-  [!WARNING] Requires neovim 0.11.0+
 
 DIAGNOSTICS                                       *myplugins.nvim-diagnostics*
 
