@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.8.0](https://github.com/deathbeam/myplugins.nvim/compare/v0.7.0...v0.8.0) (2026-04-03)
+
+
+### Features
+
+* **lspecho:** add kind and status to LSP progress echo ([b7a4832](https://github.com/deathbeam/myplugins.nvim/commit/b7a4832302b7b42f16d6942cb27832499e9392ee))
+* remove bufcomplete and cmdcomplete plugins ([ad70500](https://github.com/deathbeam/myplugins.nvim/commit/ad705005a31a39b97bf329a2f25a0453a59123f7))
+
 ## [0.7.0](https://github.com/deathbeam/myplugins.nvim/compare/v0.6.0...v0.7.0) (2025-08-26)
 
 
