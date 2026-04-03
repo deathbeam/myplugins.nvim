@@ -33,6 +33,8 @@ local function log(msg)
     local message = msg.message or ''
     local percentage = msg.percentage or 0
     local history = msg.history or false
+    local kind = msg.kind or nil
+    local status = msg.status or nil
 
     local out = ''
     if client ~= '' then
@@ -70,7 +72,16 @@ local function log(msg)
         local current_time = vim.uv.now()
         if current_time - last_echo >= M.config.interval or history then
             vim.cmd.redraw()
-            vim.api.nvim_echo({ { string.sub(out, 1, vim.v.echospace) } }, history, {})
+            local opts = {}
+            if kind then
+                opts.id = 'lsp.' .. client
+                opts.kind = kind
+                opts.source = 'vim.lsp'
+                opts.title = title
+                opts.status = status
+                opts.percent = percentage > 0 and percentage or nil
+            end
+            vim.api.nvim_echo({ { string.sub(out, 1, vim.v.echospace) } }, history, opts)
             last_echo = current_time
         end
     end
@@ -100,6 +111,8 @@ local function lsp_progress(err, progress, ctx)
             title = cur.title,
             message = cur.message .. ' - Starting',
             percentage = cur.percentage,
+            kind = 'progress',
+            status = 'running',
         })
     elseif value.kind == 'report' then
         local cur = series[token]
@@ -108,6 +121,8 @@ local function lsp_progress(err, progress, ctx)
             title = value.title or (cur and cur.title),
             message = value.message or (cur and cur.message),
             percentage = value.percentage or (cur and cur.percentage),
+            kind = 'progress',
+            status = 'running',
         })
     elseif value.kind == 'end' then
         local cur = series[token]
@@ -117,6 +132,8 @@ local function lsp_progress(err, progress, ctx)
             client = client_name or (cur and cur.client),
             title = value.title or (cur and cur.title),
             message = msg,
+            kind = 'progress',
+            status = 'success',
         })
         series[token] = nil
         clear()
